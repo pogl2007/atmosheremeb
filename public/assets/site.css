@@ -861,6 +861,26 @@ section#hero { padding-top: 46px; }
   backdrop-filter: blur(6px); transition: background .2s; }
 .hero-slide:hover .hero-shot-tag { background: rgba(28,20,14,.92); }
 
+/* Стрелки. На компьютере проявляются при наведении на снимок — иначе они
+   спорят с фотографией; на телефоне наведения нет, поэтому там видны всегда. */
+.hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: none; border-radius: 50%; cursor: pointer;
+  background: rgba(28,20,14,.55); color: #F8F6F2;
+  backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .25s, background .2s; }
+.hero-arrow svg { width: 22px; height: 22px; }
+.hero-prev { left: 14px; }
+.hero-next { right: 14px; }
+.hero-shot:hover .hero-arrow { opacity: 1; }
+.hero-arrow:hover { background: rgba(28,20,14,.85); }
+/* Фокус с клавиатуры обязан быть виден, даже если мышь не наводили */
+.hero-arrow:focus-visible { opacity: 1; outline: 2px solid #F8F6F2; outline-offset: 2px; }
+
+@media (hover: none) {
+  .hero-arrow { opacity: 1; }
+}
+
 .hero-dots { position: absolute; right: 16px; bottom: 18px; z-index: 3;
   display: flex; gap: 7px; }
 .hero-dot { width: 8px; height: 8px; padding: 0; border-radius: 50%; border: none;

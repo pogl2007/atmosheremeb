@@ -183,6 +183,16 @@ function главная(каталог) {
          Слайдер «было/стало» уехал ниже, к рассказу о работе. -->
     <div class="hero-shot" id="heroShot">
       ${слайды}
+      <!-- Стрелки и точки лежат поверх слайда, поэтому это кнопки, а не ссылки:
+           внутри слайда уже есть ссылка на товар, и вложить одну в другую нельзя. -->
+      <button type="button" class="hero-arrow hero-prev" aria-label="Предыдущая работа">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="hero-arrow hero-next" aria-label="Следующая работа">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
       <div class="hero-dots" id="heroDots" role="tablist" aria-label="Примеры работ">
         ${ГЕРОЙ.map((s, i) => `<button type="button" class="hero-dot${i ? '' : ' on'}"
           data-slide="${i}" role="tab" aria-selected="${i ? 'false' : 'true'}"

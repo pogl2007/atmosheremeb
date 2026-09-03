@@ -43,6 +43,43 @@ function initHeroSlider() {
     пуск();   // после ручного выбора отсчёт начинаем заново
   }));
 
+  // ── Листание вручную ──
+  // Любое ручное действие сбрасывает отсчёт: иначе слайд мог бы уехать
+  // через полсекунды после того, как человек сам его выбрал.
+  function листать(шаг) { показать(текущий + шаг); пуск(); }
+
+  const назад = блок.querySelector('.hero-prev');
+  const вперёд = блок.querySelector('.hero-next');
+  if (назад) назад.addEventListener('click', () => листать(-1));
+  if (вперёд) вперёд.addEventListener('click', () => листать(1));
+
+  // Клавиши работают, когда фокус внутри слайдера — на стрелке или точке.
+  блок.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); листать(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); листать(1); }
+  });
+
+  // Свайп. Порог 40 пикселей: меньше — это дрожание пальца, а не жест.
+  // Вертикальные движения пропускаем, иначе слайдер перехватывал бы
+  // обычную прокрутку страницы на телефоне.
+  const ПОРОГ = 40;
+  let началоX = 0, началоY = 0, ведём = false;
+
+  блок.addEventListener('touchstart', e => {
+    const t = e.changedTouches[0];
+    началоX = t.clientX; началоY = t.clientY; ведём = true;
+    стоп();
+  }, { passive: true });
+
+  блок.addEventListener('touchend', e => {
+    if (!ведём) return;
+    ведём = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - началоX, dy = t.clientY - началоY;
+    if (Math.abs(dx) > ПОРОГ && Math.abs(dx) > Math.abs(dy)) листать(dx < 0 ? 1 : -1);
+    else пуск();
+  }, { passive: true });
+
   блок.addEventListener('mouseenter', стоп);
   блок.addEventListener('mouseleave', пуск);
   блок.addEventListener('focusin', стоп);

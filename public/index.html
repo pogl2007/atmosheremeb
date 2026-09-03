@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=16d2bc3b">
+<link rel="stylesheet" href="/assets/site.css?v=c1339f15">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Атмосфера Мебель","url":"https://atmospheremeb.ru","logo":"https://atmospheremeb.ru/favicon-512.png","areaServed":["Москва и область","Саратов и область","Рязань и область"]}</script>
 </head>
 <body>
@@ -140,6 +140,16 @@
              loading="lazy" decoding="async">
         <span class="hero-shot-tag">Прихожая «Ваниль» — смотреть</span>
       </a>
+      <!-- Стрелки и точки лежат поверх слайда, поэтому это кнопки, а не ссылки:
+           внутри слайда уже есть ссылка на товар, и вложить одну в другую нельзя. -->
+      <button type="button" class="hero-arrow hero-prev" aria-label="Предыдущая работа">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="hero-arrow hero-next" aria-label="Следующая работа">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
       <div class="hero-dots" id="heroDots" role="tablist" aria-label="Примеры работ">
         <button type="button" class="hero-dot on"
           data-slide="0" role="tab" aria-selected="true"
@@ -549,6 +559,6 @@
   <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер.</div>
 </div>
 
-<script src="/assets/site.js?v=d147a74b"></script>
+<script src="/assets/site.js?v=6ba8f8cc"></script>
 </body>
 </html>
