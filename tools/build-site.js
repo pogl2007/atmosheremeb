@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const PUB = path.join(ROOT, 'public');
@@ -15,7 +16,7 @@ const SITE = path.join(ROOT, 'site');
 
 const каталог = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'catalog.json'), 'utf8'));
 const посты = require(path.join(SITE, 'blog-posts.js'));
-const { КОНТАКТЫ, частиДляPHP } = require(path.join(SITE, 'layout.js'));
+const { КОНТАКТЫ, частиДляPHP, ВЕРСИИ } = require(path.join(SITE, 'layout.js'));
 const P = require(path.join(SITE, 'pages.js'));
 const P2 = require(path.join(SITE, 'pages2.js'));
 const P3 = require(path.join(SITE, 'pages3.js'));
@@ -36,6 +37,12 @@ function записать(маршрут, html) {
 
 /* ── Скрипты ── */
 
+// Короткий отпечаток содержимого — он же метка версии в адресе файла.
+// Не изменился файл — не изменился адрес, браузер берёт его из кэша.
+function метка(содержимое) {
+  return crypto.createHash('md5').update(содержимое).digest('hex').slice(0, 8);
+}
+
 function собратьСтили() {
   const читать = f => fs.readFileSync(path.join(SITE, f), 'utf8');
   fs.mkdirSync(path.join(PUB, 'assets'), { recursive: true });
@@ -54,6 +61,7 @@ function собратьСтили() {
   ].join('\n');
 
   fs.writeFileSync(path.join(PUB, 'assets', 'site.css'), css, 'utf8');
+  ВЕРСИИ.css = метка(css);
 
   const o = (css.match(/{/g) || []).length, c = (css.match(/}/g) || []).length;
   if (o !== c) console.log(`  ВНИМАНИЕ: в стилях ${o} «{» и ${c} «}» — где-то потеряна скобка`);
@@ -74,6 +82,7 @@ function собратьСкрипты() {
     читать('slider.js'),
   ].join('\n\n');
   fs.writeFileSync(path.join(PUB, 'assets', 'site.js'), site, 'utf8');
+  ВЕРСИИ.js = метка(site);
 
   // Планировщик вешает обработчики на свою разметку сразу при загрузке,
   // без проверок, поэтому его нельзя класть в общий бандл — на остальных
@@ -84,6 +93,7 @@ function собратьСкрипты() {
     читать('planner-page.js'),
   ].join('\n\n');
   fs.writeFileSync(path.join(PUB, 'assets', 'planner.js'), planner, 'utf8');
+  ВЕРСИИ.planner = метка(planner);
 
   return {
     site: Buffer.byteLength(site),

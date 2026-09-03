@@ -5,7 +5,7 @@
 // планировщик стал самостоятельным инструментом: выбираешь тип комнаты,
 // задаёшь размеры и расставляешь мебель сам.
 
-const { page } = require('./layout.js');
+const { page, ВЕРСИИ } = require('./layout.js');
 
 const КОМНАТЫ = [
   ['Кухня', 'M7 30h50v23H7zM7 39h50M32 30v23'],
@@ -95,7 +95,7 @@ function планировщик(каталог) {
     title: 'Планировщик комнаты | Атмосфера Мебель',
     description: 'Задайте размеры комнаты и расставьте мебель онлайн. Готовый план отправим менеджеру вместе с заявкой.',
     canonical: '/planner/', active: 'planner', категории: каталог.categories, body,
-    extraBody: '<script src="/assets/planner.js"></script>',
+    extraBody: `<script src="/assets/planner.js${ВЕРСИИ.planner ? "?v=" + ВЕРСИИ.planner : ""}"></script>`,
   });
 }
 

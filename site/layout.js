@@ -11,6 +11,14 @@
 // Вариантов два: на светлом фоне знак тёмно-синий с золотом, а на шоколадном
 // синий контур почти сливается, поэтому там идёт золотой. Переключаются
 // стилями по классу nav.over-dark, без скриптов.
+// Версия сборки в адресе файла. Имена site.css и site.js между сборками
+// не меняются, поэтому браузер, однажды скачавший их, держит копию до
+// истечения кэша и после обновления сайта склеивает новый HTML со старыми
+// стилями — вёрстка разъезжается. Метка в адресе делает файл новым.
+// Значение подставляет tools/build-site.js по содержимому файла.
+const ВЕРСИИ = { css: '', js: '', planner: '' };
+const v = метка => метка ? '?v=' + метка : '';
+
 const ЛОГО_ЗНАК = () => `
       <span class="logo-mark">
         <img class="lm-light" src="/img/logo-mark.png" srcset="/img/logo-mark@2x.png 2x"
@@ -74,7 +82,7 @@ function head({ title, description, canonical, ogImage }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css">`;
+<link rel="stylesheet" href="/assets/site.css${v(ВЕРСИИ.css)}">`;
 }
 
 function nav(active, категории = []) {
@@ -224,7 +232,7 @@ ${body}
 ${footer(категории)}
 ${консультант}
 ${extraBody}
-<script src="/assets/site.js"></script>
+<script src="/assets/site.js${v(ВЕРСИИ.js)}"></script>
 </body>
 </html>`;
 }
@@ -246,7 +254,7 @@ ${nav('blog', категории)}
 `;
   const подвал = `${footer(категории)}
 ${консультант}
-<script src="/assets/site.js"></script>
+<script src="/assets/site.js${v(ВЕРСИИ.js)}"></script>
 </body>
 </html>
 `;
@@ -254,4 +262,4 @@ ${консультант}
 }
 
 module.exports = {
-  page, nav, footer, head, schemaOrg, частиДляPHP, МЕНЮ, КОНТАКТЫ };
+  ВЕРСИИ, page, nav, footer, head, schemaOrg, частиДляPHP, МЕНЮ, КОНТАКТЫ };
