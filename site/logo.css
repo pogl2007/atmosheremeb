@@ -1,0 +1,27 @@
+
+/* ═══════ Знак логотипа ═══════
+   Растровый: вектора у логотипа нет, исходники пришли картинками.
+   Пропорции у знака не квадратные (примерно 6:5), поэтому старое правило
+   38×38 его бы сплющило — задаём только высоту, ширина считается сама. */
+
+.logo-mark { display: inline-flex; align-items: center; flex-shrink: 0; }
+.logo-mark img { display: block; height: 34px; width: auto; }
+
+/* Светлый и тёмный варианты знака. На шоколадном фоне тёмно-синий контур
+   почти сливается, поэтому там показываем золотой. Переключение — только
+   стилями, без скриптов: класс over-dark и так уже висит на шапке. */
+.logo-mark .lm-dark { display: none; }
+nav.over-dark .logo-mark .lm-light { display: none; }
+nav.over-dark .logo-mark .lm-dark { display: block; }
+
+.hero-mark { display: block; height: 48px; width: auto; flex-shrink: 0; }
+.footer-mark { display: block; height: 40px; width: auto; margin-bottom: 10px; }
+
+@media (max-width: 900px) {
+  .logo-mark img { height: 28px; }
+  .hero-mark { height: 40px; }
+}
+
+/* Подпись рядом со знаком: название компании стоит живым текстом,
+   а не картинкой — чётко на любом экране и ничего не весит. */
+.logo-text { display: block; }

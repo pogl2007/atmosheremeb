@@ -1,0 +1,197 @@
+
+/* ── Хлебные крошки ── */
+.crumbs { padding: 22px 0 0; font-size: 14px; color: var(--secondary); }
+.crumbs a:hover { color: var(--accent); }
+.crumbs span { opacity: .55; margin: 0 7px; }
+
+/* ── Шапка раздела ── */
+.page-head { padding: 30px 0 34px; }
+.page-head h1 { font-family: var(--font-d); font-size: clamp(30px, 5vw, 46px); line-height: 1.15; margin-bottom: 12px; }
+.page-head p { max-width: 640px; font-size: 17px; }
+
+/* ── Фильтры каталога ──
+   Разложены по группам, а не в одну строку: на 137 товарах десять планировок
+   плюс стили и гаммы в одну ленту не помещаются и превращаются в кашу. */
+.filters { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 18px 20px; margin-bottom: 26px; }
+.filters-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.filters-count { margin-left: auto; font-size: 14px; color: var(--secondary); }
+.filter-group { margin-top: 16px; }
+.filter-group + .filter-group { border-top: 1px solid var(--border); padding-top: 14px; }
+.filter-group h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--secondary); margin-bottom: 9px; font-weight: 600; }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { padding: 7px 15px; border-radius: 999px; border: 1px solid var(--border);
+  background: transparent; color: var(--secondary); font: inherit; font-size: 14px;
+  cursor: pointer; transition: background .18s, color .18s, border-color .18s; }
+.pill:hover { border-color: var(--accent); color: var(--primary); }
+.pill.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pill .n { opacity: .6; margin-left: 5px; font-size: 12px; }
+.pill.on .n { opacity: .85; }
+.filters-reset { background: none; border: none; color: var(--accent); font: inherit;
+  font-size: 14px; cursor: pointer; text-decoration: underline; padding: 0; }
+
+/* ── Сетка товаров ── */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 24px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.card:hover { transform: translateY(-4px); box-shadow: var(--sh2); border-color: var(--accent); }
+.card-img { position: relative; aspect-ratio: 4/5; background: var(--accent-light); overflow: hidden; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-tag { position: absolute; left: 10px; top: 10px; background: rgba(45,35,27,.82);
+  color: #F1E4D2; font-size: 12px; padding: 4px 10px; border-radius: 999px; backdrop-filter: blur(6px); }
+.card-body { padding: 15px 16px 17px; display: flex; flex-direction: column; flex: 1; gap: 7px; }
+.card-body h3 { font-family: var(--font-d); font-size: 21px; line-height: 1.2; }
+.card-desc { font-size: 14px; line-height: 1.5; flex: 1; }
+.card-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 3px 9px; border-radius: 999px;
+  background: var(--accent-light); color: var(--secondary); }
+.card-foot { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+.card-price { font-size: 14px; color: var(--secondary); }
+.card-price b { color: var(--primary); font-size: 16px; }
+
+/* ── Кнопки ── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: 999px; border: 1px solid transparent; font: inherit;
+  font-weight: 500; cursor: pointer; transition: background .2s, color .2s, border-color .2s, transform .12s; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #B07F52; }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--primary); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 8px 15px; font-size: 14px; }
+.btn-block { width: 100%; }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+.btn.added { background: var(--green); }
+
+/* ── Пусто ── */
+.empty { text-align: center; padding: 60px 20px; color: var(--secondary); }
+.empty h3 { font-family: var(--font-d); font-size: 24px; margin-bottom: 8px; }
+
+/* ── Карточка товара ── */
+.product { display: grid; grid-template-columns: 1.05fr .95fr; gap: 42px; padding: 26px 0 60px; align-items: start; }
+.gallery-main { position: relative; aspect-ratio: 4/5; border-radius: var(--r); overflow: hidden;
+  background: var(--accent-light); border: 1px solid var(--border); }
+.gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-thumbs { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.gallery-thumbs button { width: 74px; aspect-ratio: 4/5; border-radius: 10px; overflow: hidden;
+  border: 2px solid transparent; background: none; padding: 0; cursor: pointer; }
+.gallery-thumbs button.on { border-color: var(--accent); }
+.gallery-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.product-info h1 { font-family: var(--font-d); font-size: clamp(28px, 4vw, 42px); line-height: 1.12; margin-bottom: 10px; }
+.product-lead { font-size: 18px; margin-bottom: 20px; }
+.spec { border-top: 1px solid var(--border); margin: 22px 0; }
+.spec > div { display: flex; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+.spec dt { flex: 0 0 150px; color: var(--secondary); }
+.spec dd { color: var(--primary); }
+.product-items { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
+.product-buy { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.product-note { font-size: 14px; color: var(--secondary); margin-top: 14px; }
+
+/* ── Корзина ── */
+.cart-row { display: grid; grid-template-columns: 96px 1fr auto; gap: 16px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 12px; margin-bottom: 12px; }
+.cart-row img { width: 96px; aspect-ratio: 4/5; object-fit: cover; border-radius: 10px; display: block; }
+.cart-row h3 { font-family: var(--font-d); font-size: 19px; margin-bottom: 3px; }
+.cart-row .sub { font-size: 14px; }
+.cart-del { background: none; border: none; color: var(--secondary); cursor: pointer;
+  font-size: 22px; line-height: 1; padding: 6px 10px; border-radius: 8px; }
+.cart-del:hover { color: #B3261E; background: rgba(179,38,30,.08); }
+.cart-layout { display: grid; grid-template-columns: 1fr 350px; gap: 30px; align-items: start; padding-bottom: 60px; }
+.cart-form { background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 22px; position: sticky; top: 92px; }
+.cart-form h3 { font-family: var(--font-d); font-size: 23px; margin-bottom: 6px; }
+.cart-form .hint { font-size: 14px; margin-bottom: 16px; }
+.field { margin-bottom: 13px; }
+.field label { display: block; font-size: 14px; margin-bottom: 5px; color: var(--secondary); }
+.field input, .field select, .field textarea { width: 100%; padding: 11px 13px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg); font: inherit; font-size: 15px; color: var(--primary); }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.field .err { color: #B3261E; font-size: 13px; margin-top: 4px; display: none; }
+.field.bad .err { display: block; }
+.field.bad input { border-color: #B3261E; }
+/* Ловушка для ботов: человек этого поля не видит и не заполняет */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Счётчик корзины в шапке */
+.cart-link { position: relative; display: inline-flex; align-items: center; gap: 7px; }
+.cart-count { min-width: 19px; height: 19px; padding: 0 5px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-size: 12px; font-weight: 600;
+  display: none; align-items: center; justify-content: center; }
+.cart-count.on { display: inline-flex; }
+
+/* ── Плитки категорий ── */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+.tile { position: relative; aspect-ratio: 3/4; border-radius: var(--r); overflow: hidden;
+  border: 1px solid var(--border); display: block; }
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.tile:hover img { transform: scale(1.05); }
+.tile-cap { position: absolute; inset: auto 0 0 0; padding: 34px 18px 16px; color: #fff;
+  background: linear-gradient(transparent, rgba(30,22,17,.82)); }
+.tile-cap b { font-family: var(--font-d); font-size: 24px; font-weight: 400; display: block; }
+.tile-cap span { font-size: 14px; opacity: .88; }
+
+/* ── Блог ── */
+.posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.post-card { background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 22px; display: flex; flex-direction: column; gap: 9px;
+  transition: transform .2s, box-shadow .2s; }
+.post-card:hover { transform: translateY(-3px); box-shadow: var(--sh2); }
+.post-card h3 { font-family: var(--font-d); font-size: 22px; line-height: 1.22; }
+.post-date { font-size: 13px; color: var(--secondary); }
+.article { max-width: 720px; margin: 0 auto; padding: 20px 0 70px; }
+.article h1 { font-family: var(--font-d); font-size: clamp(28px, 4.4vw, 42px); line-height: 1.15; margin-bottom: 12px; }
+.article h2 { font-family: var(--font-d); font-size: 27px; margin: 34px 0 12px; }
+.article p { margin-bottom: 16px; font-size: 17px; }
+.article ul { margin: 0 0 16px 0; }
+.article li { position: relative; padding-left: 22px; margin-bottom: 9px; font-size: 17px; }
+.article li::before { content: ""; position: absolute; left: 4px; top: 11px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* ── Контакты ── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; padding-bottom: 60px; align-items: start; }
+.contact-list > div { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.contact-list dt { font-size: 14px; color: var(--secondary); margin-bottom: 3px; }
+.contact-list dd { font-size: 17px; color: var(--primary); }
+.req { font-size: 14px; line-height: 1.8; }
+.req b { color: var(--primary); }
+/* Заглушка реквизитов: видно, что данные ещё не подставлены */
+.stub { display: inline-block; background: var(--accent-light); border: 1px dashed var(--accent);
+  border-radius: 6px; padding: 1px 7px; font-size: 13px; color: var(--secondary); }
+
+/* ── Уведомление ── */
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 24px);
+  background: #2D231B; color: #F1E4D2; padding: 13px 22px; border-radius: 999px;
+  font-size: 15px; z-index: 3000; opacity: 0; pointer-events: none;
+  transition: opacity .25s, transform .25s; box-shadow: 0 12px 34px rgba(45,35,27,.32); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 900px) {
+  .product { grid-template-columns: 1fr; gap: 26px; }
+  .cart-layout { grid-template-columns: 1fr; }
+  .cart-form { position: static; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+  .card-body { padding: 12px 13px 14px; }
+  .card-body h3 { font-size: 18px; }
+  .card-desc { font-size: 13px; }
+  .spec dt { flex: 0 0 116px; }
+}
+
+/* Белый текст на бежевом акценте давал контраст 2.67 при норме 4.5 —
+   надпись на главной кнопке читалась плохо, особенно на солнце и на
+   дешёвых экранах. Цвет кнопки не трогаем (это фирменный оттенок),
+   меняем текст на тёмно-коричневый: с ним получается 5.8. */
+.btn-primary { color: #2A2118; }
+.btn-primary:hover { color: #2A2118; }
+
+/* Кнопка «Все фильтры»: раскрывает планировку, стиль и гамму */
+.filters-more { display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border);
+  background: transparent; color: var(--primary); font: inherit; font-size: 14px;
+  cursor: pointer; transition: border-color .18s, color .18s; }
+.filters-more:hover { border-color: var(--accent); }
+.filters-more svg { width: 14px; height: 14px; transition: transform .22s ease; }
+.filters-more[aria-expanded="true"] svg { transform: rotate(180deg); }

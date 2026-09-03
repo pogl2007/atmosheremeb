@@ -1,0 +1,217 @@
+
+/* ═══════ Блоки многостраничной версии ═══════ */
+
+/* Секции задают общий ритм страницы: раньше отступы были прописаны
+   у каждой секции отдельно и разъезжались. */
+section { padding: var(--pad) 0; }
+section#hero { padding-top: 46px; }
+.warm-section { background: var(--section-warm); }
+.container.narrow { max-width: 620px; }
+
+.section-head { margin-bottom: 34px; max-width: 640px; }
+.section-head h2 { font-family: var(--font-d); font-size: clamp(26px, 4vw, 38px); line-height: 1.15; margin-bottom: 10px; }
+.section-head p { font-size: 17px; }
+
+/* Подсветка активного пункта меню */
+.nav-links a.on { color: var(--accent); }
+.nav-links a.on::after { width: 100%; }
+
+/* Первый экран: колонка с логотипом и слоганом */
+.hero-brand-col { display: flex; flex-direction: column; justify-content: center; }
+
+/* Шаги «как это работает» */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.step { background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 24px 22px; }
+.step h3 { font-family: var(--font-d); font-size: 21px; margin: 12px 0 8px; }
+.step p { font-size: 15px; }
+.step-num { width: 38px; height: 38px; border-radius: 50%; background: var(--accent);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 17px; }
+
+.tiles-simple { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+/* ── Планировщик ── */
+.room-picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+.room-pick { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 22px 16px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+  cursor: pointer; font: inherit; color: var(--primary);
+  transition: border-color .2s, transform .2s, box-shadow .2s; }
+.room-pick:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--sh2); }
+.room-pick.on { border-color: var(--accent); background: var(--accent-light); }
+.room-pick svg { width: 52px; height: 52px; color: var(--accent); }
+.room-pick span { font-size: 15px; font-weight: 500; }
+
+.planner-layout { display: grid; grid-template-columns: 1fr 340px; gap: 30px; align-items: start; }
+.planner-size { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 16px; }
+.planner-size label { font-size: 13px; color: var(--secondary); display: flex;
+  flex-direction: column; gap: 4px; }
+.planner-size input { width: 96px; padding: 8px 10px; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--surface); font: inherit; color: var(--primary); }
+.planner-layout .plan-stage { background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 10px; }
+
+@media (max-width: 900px) {
+  :root { --pad: 56px; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .tiles-simple { grid-template-columns: 1fr; }
+  .planner-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .steps { grid-template-columns: 1fr; }
+}
+
+/* ── Блоки «под ключ» и «что входит в стоимость» ── */
+.container.narrow-wide { max-width: 840px; }
+
+.adv-list { display: grid; gap: 14px; }
+.adv { display: flex; align-items: flex-start; gap: 13px; font-size: 17px; line-height: 1.55; }
+.adv svg { width: 22px; height: 22px; flex-shrink: 0; margin-top: 4px; color: var(--green); }
+.adv b { color: var(--primary); font-weight: 600; }
+
+.note-strong { margin-top: 22px; padding: 14px 18px; border-radius: var(--r);
+  background: var(--accent-light); color: var(--primary); font-weight: 500; }
+
+/* Надстрочник первого экрана: коротко о формате работы.
+   Бежевый акцент на бежевом фоне давал контраст 2.13 при норме 4.5 —
+   надпись была почти не видна. Берём тот же оттенок, но глубже: 5.1. */
+.hero-tag { font-size: 13px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase;
+  color: #7D5228; margin-bottom: 14px; }
+
+/* Шаги пронумерованы 01…06 — кружок под две цифры */
+.step-num { width: 42px; height: 42px; font-size: 15px; letter-spacing: .02em; }
+
+/* ── Две колонки ──
+   Блоки «Мебель под ключ» / «Что входит в стоимость» и заголовок формы
+   раньше стояли поодиночке в узком контейнере: текст жался к левому краю,
+   а справа оставалась пустая треть экрана. Рядом они закрывают всю ширину.
+
+   Колонки выровнены по верху: они разной высоты, и растягивать короткую
+   до высоты длинной незачем. */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+.two-col > div > .section-head { margin-bottom: 26px; }
+
+/* В паре колонок заголовки набраны мельче, чем у одиночной секции:
+   два крупных h2 в одной строке спорят друг с другом за внимание */
+.two-col .section-head h2 { font-size: clamp(24px, 2.6vw, 32px); }
+
+/* Форма во второй колонке уже не тянется на всю ширину сама по себе */
+.two-col .cart-form { position: static; }
+
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; gap: 42px; }
+}
+
+/* --- Пометка о тестировании -------------------------------------------
+   Пока нет настоящих контактов, вместо них везде стоит эта надпись.
+   Снимается вместе с тестовыйРежим в site/contacts.js. */
+.footer-test { color: var(--accent-text-dark); font-size: 14px; }
+
+.test-note { border: 1px dashed var(--border); border-radius: 12px;
+             padding: 16px 18px; margin-bottom: 22px; background: var(--surface); }
+.test-note b { display: block; color: var(--primary); font-size: 17px; margin-bottom: 6px; }
+.test-note p { font-size: 14px; margin: 0 0 6px; }
+.test-note p:last-child { margin-bottom: 0; }
+
+/* ═══════════ Правки по разбору вёрстки ═══════════ */
+
+/* Герой: фото товара вместо рендера. Колонку с текстом придерживаем,
+   иначе строки расползаются на широком экране. */
+.hero-brand-col { max-width: 560px; }
+.hero-shot { position: relative; border-radius: var(--r); overflow: hidden;
+  aspect-ratio: 4/3; background: var(--accent-light); }
+/* Слайды лежат стопкой и переключаются прозрачностью: так не дёргается
+   вёрстка и не нужно считать ширину ленты. */
+.hero-slide { position: absolute; inset: 0; display: block; text-decoration: none;
+  opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility .7s; }
+.hero-slide.on { opacity: 1; visibility: visible; }
+.hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-shot-tag { position: absolute; left: 16px; bottom: 16px; z-index: 2;
+  background: rgba(28,20,14,.72); color: #F8F6F2; text-decoration: none;
+  font-size: 13px; padding: 8px 14px; border-radius: 999px;
+  backdrop-filter: blur(6px); transition: background .2s; }
+.hero-slide:hover .hero-shot-tag { background: rgba(28,20,14,.92); }
+
+.hero-dots { position: absolute; right: 16px; bottom: 18px; z-index: 3;
+  display: flex; gap: 7px; }
+.hero-dot { width: 8px; height: 8px; padding: 0; border-radius: 50%; border: none;
+  background: rgba(248,246,242,.45); cursor: pointer; transition: background .25s, transform .25s; }
+.hero-dot.on { background: #F8F6F2; transform: scale(1.25); }
+.hero-dot:hover { background: rgba(248,246,242,.8); }
+
+/* Если человек просил систему не анимировать — не анимируем */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide { transition: none; }
+}
+
+/* Категорий семь. В четыре колонки с двойной первой это ровно два ряда
+   без «сирот», а «Кухни» — их 83 из 137 — заслуженно вдвое крупнее. */
+.tiles { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 360px; }
+/* Высоту ряда задаём явно: у широкой плитки своё соотношение сторон, и если
+   оставить aspect-ratio, она вытягивает строку, а под соседями остаётся дыра. */
+.tiles .tile { aspect-ratio: auto; }
+.tiles .tile:first-child { grid-column: span 2; }
+
+/* Шагов шесть: строго 3×2, иначе последний ряд обрывался вдвоём из четырёх */
+.steps { grid-template-columns: repeat(3, 1fr); }
+
+/* Слайдер «было/стало» на новом месте — по центру, не во всю ширину */
+.ba-block { max-width: 620px; margin: 46px auto 0; }
+
+/* Светлый потолок на фото сливался с кремовой карточкой и съедал её край */
+.card-img { position: relative; }
+.card-img::after { content: ''; position: absolute; inset: 0 0 auto 0; height: 22%;
+  background: linear-gradient(rgba(20,14,9,.18), transparent); pointer-events: none; }
+.card-img img { border-bottom: 1px solid var(--border); }
+
+/* Вторая кнопка героя читалась просто текстом */
+.btn-secondary { border: 1px solid var(--border); }
+
+/* Фото товара едет вместе с прокруткой — под ним больше нет пустого места */
+@media (min-width: 861px) {
+  .product > :first-child { position: sticky; top: 92px; }
+}
+
+/* Пустая корзина: заголовок слева, а блок был по центру — разнобой.
+   И провал в сто пикселей между ними. */
+#cartEmpty, #cartDone { text-align: left; margin-top: 32px; padding: 0; }
+
+@media (max-width: 860px) {
+  .tiles { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 210px; }
+  .tiles .tile:first-child { grid-column: span 2; }
+  .steps { grid-template-columns: 1fr; }
+  .hero-brand-col { max-width: none; }
+  /* Пальцу нужно 44 px, иначе промахивается */
+  .btn, .pill, .footer-col a, .crumbs a { min-height: 44px; }
+  .footer-col a, .crumbs a { display: inline-flex; align-items: center; }
+}
+
+/* Кнопка «Показать ещё» под сеткой каталога */
+.more-btn { display: block; margin: 28px auto 0; min-width: 260px; }
+
+/* ═══════════ Секция «Мебель под ключ» ═══════════
+   Правая колонка — карточка, левая остаётся текстом. Разное оформление
+   для разного по смыслу: слева обещание, справа перечень обязательств. */
+
+.offer-card { background: rgba(248, 246, 242, .045);
+  border: 1px solid rgba(248, 246, 242, .13);
+  border-radius: 16px; padding: 32px 30px; }
+
+/* Колонки выравниваем по верху, но карточка должна дотягиваться до низа
+   секции, иначе под ней остаётся ступенька. */
+#offer .two-col { align-items: stretch; }
+.offer-claim { display: flex; flex-direction: column; }
+.offer-cta { margin-top: auto; padding-top: 28px; }
+.offer-warranty { font-size: 14px; margin-top: 14px; line-height: 1.5;
+  color: rgba(248, 246, 242, .78); }
+
+/* Плашка про доплаты уже была выделена — внутри карточки ей хватает
+   более спокойного фона, иначе получается коробка в коробке. */
+.offer-card .note-strong { background: rgba(196, 149, 106, .16);
+  border: 1px solid rgba(196, 149, 106, .28); }
+
+@media (max-width: 860px) {
+  .offer-card { padding: 24px 20px; }
+  .offer-cta { padding-top: 22px; }
+  .offer-cta .btn { width: 100%; }
+}

@@ -1,0 +1,68 @@
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+      <img class="footer-mark" src="/img/logo-mark-light.png" srcset="/img/logo-mark-light@2x.png 2x"
+           width="49" height="40" alt="" aria-hidden="true">
+        <span class="logo-main">Атмосфера</span>
+        <span class="logo-sub">Мебель</span>
+        <p>Кухни, шкафы и гардеробные на заказ по вашим размерам. Выездной шоу-рум: дизайнер приедет с образцами, замер и проект бесплатно.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Каталог</h4>
+        <a href="/catalog/?cat=%D0%9A%D1%83%D1%85%D0%BD%D0%B8">Кухни</a>
+        <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5">Шкафы и гардеробные</a>
+        <a href="/catalog/?cat=%D0%93%D0%BE%D1%81%D1%82%D0%B8%D0%BD%D1%8B%D0%B5">Гостиные</a>
+        <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8">Спальни</a>
+        <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5">Прихожие</a>
+        <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5">Детские</a>
+        <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B">Столы</a>
+      </div>
+      <div class="footer-col">
+        <h4>Компания</h4>
+        <a href="/about/">О компании</a>
+        <a href="/blog/">Блог</a>
+        <a href="/contacts/">Контакты</a>
+        <a href="/cart/">Корзина</a>
+      </div>
+      
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Атмосфера Мебель</p>
+      <p>Сайт тестируется</p>
+    </div>
+  </div>
+</footer>
+
+<div class="cbubble" id="cbubble">
+  <div class="cbubble-label" id="cbubbleLabel" onclick="openChat()">Сообщение от консультанта</div>
+  <button class="cbubble-btn" onclick="openChat()" aria-label="Открыть чат с консультантом">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    <span class="cbubble-dot" id="cbubbleDot"></span>
+  </button>
+</div>
+
+<div class="cpanel" id="cpanel" role="dialog" aria-label="Чат с консультантом">
+  <div class="cpanel-head">
+    <div class="cpanel-ava">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    </div>
+    <div>
+      <div class="cpanel-title">Консультант «Атмосфера Мебель»</div>
+      <div class="cpanel-sub">На связи</div>
+    </div>
+    <button class="cpanel-close" onclick="closeChat()" aria-label="Закрыть">×</button>
+  </div>
+  <div class="cpanel-body" id="cbody"></div>
+  <div class="cpanel-chips" id="cchips"></div>
+  <form class="cpanel-foot" id="cform" onsubmit="sendChat(event)">
+    <input id="cinput" type="text" placeholder="Спросите о мебели…" autocomplete="off">
+    <button class="cpanel-send" type="submit" id="csend" aria-label="Отправить">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+    </button>
+  </form>
+  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер.</div>
+</div>
+<script src="/assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+
+/* ═══════ Шапка: выпадающий каталог, прозрачность над шоколадом ═══════ */
+
+/* Правило `nav { position: sticky; z-index: 1000 }` из старой вёрстки
+   применялось ко ВСЕМ тегам <nav>, а хлебные крошки — тоже <nav>.
+   Они превращались во вторую липкую полосу и наезжали на шапку. */
+nav.crumbs { position: static; z-index: auto; background: none; backdrop-filter: none;
+  border-bottom: none; }
+
+/* ── Выпадающий список разделов ── */
+.nav-drop { position: relative; }
+.nav-links .nav-link { display: inline-flex; align-items: center; gap: 5px;
+  font-size: 14px; font-weight: 500; color: var(--primary); background: none;
+  border: none; font-family: inherit; cursor: pointer; padding: 0 0 2px;
+  position: relative; }
+.nav-links .nav-link svg { width: 14px; height: 14px; transition: transform .22s ease; }
+.nav-links .nav-link[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.nav-drop-menu { position: absolute; top: calc(100% + 14px); left: 50%; transform: translateX(-50%);
+  min-width: 244px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 8px; box-shadow: 0 18px 44px rgba(45,35,27,.20);
+  display: flex; flex-direction: column; gap: 1px; z-index: 1200; }
+.nav-drop-menu[hidden] { display: none; }
+.nav-drop-menu a { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 9px 13px; border-radius: 9px; font-size: 14.5px;
+  color: var(--primary); transition: background .15s; }
+.nav-drop-menu a:hover { background: var(--accent-light); }
+.nav-drop-menu a .n { font-size: 12px; color: var(--secondary); opacity: .7; }
+.nav-drop-menu a.all { font-weight: 600; border-bottom: 1px solid var(--border);
+  border-radius: 9px 9px 0 0; margin-bottom: 4px; padding-bottom: 11px; }
+
+/* ── Шапка над шоколадной секцией ──
+   Пока под ней тёмная часть страницы, шапка становится прозрачной со
+   светлым текстом: иначе светлая полоса разрезает тёмный блок пополам. */
+nav.over-dark { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+  border-bottom-color: transparent; }
+nav.over-dark .logo-main,
+nav.over-dark .nav-links .nav-link { color: #F8F6F2; }
+nav.over-dark .logo-sub { color: rgba(248,246,242,.62); }
+nav.over-dark .logo-mark { color: #F8F6F2; }
+nav.over-dark .nav-links .nav-link.on { color: var(--accent-text-dark); }
+nav.over-dark .hamburger span { background: #F8F6F2; }
+/* Прокрутили — возвращаем подложку, иначе текст ложится прямо на фотографии */
+nav.over-dark.scrolled { background: rgba(45,35,27,.86);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+@media (max-width: 900px) {
+  /* На телефоне список раскрывается прямо в мобильном меню, отдельное
+     выпадающее окно там не нужно и мешает */
+  .nav-drop-menu { display: none !important; }
+  .mobile-menu a.sub { padding-left: 26px; font-size: 14px;
+    display: flex; justify-content: space-between; }
+  .mobile-menu a .n { color: var(--secondary); opacity: .7; font-size: 12px; }
+}

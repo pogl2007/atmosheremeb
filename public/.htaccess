@@ -1,0 +1,68 @@
+RewriteEngine On
+
+# /api/submit → api/submit.php (адрес в JS-коде не меняется)
+RewriteRule ^api/submit/?$ api/submit.php [L]
+RewriteRule ^api/chat/?$ api/chat.php [L]
+RewriteRule ^api/plan/?$ api/plan.php [L]
+
+# Секреты: токен Telegram, ключ ИИ и хеш пароля админки
+<Files "config.php">
+  Require all denied
+</Files>
+
+# Журнал заявок лежит на уровень выше корня сайта и через веб недоступен.
+# Здесь закрываем на случай, если папку data когда-нибудь перенесут внутрь.
+<FilesMatch "\.(jsonl|md)$">
+  Require all denied
+</FilesMatch>
+
+# Пароль от админки в открытом виде — только для владельца, не для веба
+<Files "admin-password.txt">
+  Require all denied
+</Files>
+
+# Старый Apache не знает про AVIF и отдаёт такие файлы как application/octet-stream.
+# Браузер в этом случае картинку не показывает, поэтому тип задаём явно.
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+</IfModule>
+
+# Статику держим в кэше долго: имена файлов меняются вместе с содержимым
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png  "access plus 1 year"
+  ExpiresByType text/css   "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  # Каталог и правки из админки должны подхватываться сразу
+  ExpiresByType application/json "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# Принудительный https: без него заявки с именем и телефоном могли бы уйти
+# открытым текстом, а пароль администратора — тем более.
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Заголовки безопасности для всего сайта
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Список файлов в папках не отдаём
+Options -Indexes
+
+# Единый вид адреса: без www и по https — иначе поисковик считает
+# это разными сайтами и делит между ними вес страниц
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+ErrorDocument 404 /404.html

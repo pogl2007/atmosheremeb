@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Иконка и превью обязаны быть доступны роботам, иначе логотип
+# не появится рядом со ссылкой в выдаче
+Allow: /favicon.ico
+Allow: /og-image.jpg
+
+Disallow: /api/
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /config.php
+
+Sitemap: https://atmospheremeb.ru/sitemap.xml
