@@ -505,7 +505,7 @@ async function initBlogExtra() {
 
   // Свежие — сверху: админка добавляет новые в начало файла
   list.insertAdjacentHTML('afterbegin', посты.map(p => `
-    <a class="post-card" href="/blog/post.php?slug=${encodeURIComponent(p.slug || '')}">
+    <a class="post-card" href="/blog/${encodeURIComponent(p.slug || '')}/">
       <span class="post-date">${esc(p.dateHuman || '')}</span>
       <h3>${esc(p.title || '')}</h3>
       <p>${esc(p.lead || '')}</p>

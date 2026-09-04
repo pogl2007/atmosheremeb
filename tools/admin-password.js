@@ -24,8 +24,9 @@ const соль = crypto.randomBytes(16).toString('hex');
 const итераций = 200000;
 const хеш = crypto.pbkdf2Sync(пароль, соль, итераций, 32, 'sha256').toString('hex');
 
-console.log('Замените эти три строки в public/config.php:\n');
-console.log(`define('ADMIN_SALT', '${соль}');`);
-console.log(`define('ADMIN_ITER', ${итераций});`);
-console.log(`define('ADMIN_HASH', '${хеш}');`);
-console.log('\nПароль нигде не сохранён — запомните его.');
+console.log('Замените эти три строки в /etc/atmosfera/atmosfera.env на сервере:\n');
+console.log(`ADMIN_SALT=${соль}`);
+console.log(`ADMIN_ITER=${итераций}`);
+console.log(`ADMIN_HASH=${хеш}`);
+console.log('\nПотом перезапустите службу:  systemctl restart atmosfera');
+console.log('Пароль нигде не сохранён — запомните его.');
