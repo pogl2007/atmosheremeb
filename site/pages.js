@@ -256,6 +256,52 @@ function главная(каталог) {
   </div>
 </section>
 
+<!-- «Было — стало» стоит между выбором раздела и рассказом о работе
+     намеренно: человек выбрал комнату, здесь видит, во что она превращается,
+     и только потом читает, как мы к этому идём. Раньше блок висел в конце
+     «Как это работает» — не к месту по смыслу (шаги про процесс, слайдер
+     про результат) и в одиночестве посреди широкой тёмной секции.
+     Две колонки закрывают и то, и другое: слева рассказ, справа картинка. -->
+<section id="result" class="dark">
+  <div class="container">
+    <div class="two-col">
+      <div class="result-text">
+        <div class="section-head">
+          <h2>Что меняется в комнате</h2>
+          <p>Чистовая отделка — это ещё не жильё. Мебель по размеру превращает
+             пустые стены в комнату, где всё на своих местах.</p>
+        </div>
+        <p class="result-note">Каждый проект начинается с замера: мы считаем мебель
+           под ваши стены, окна и двери, а не подгоняем комнату под готовый гарнитур.</p>
+        <div class="result-cta">
+          <a href="/catalog/" class="btn btn-primary">Смотреть каталог</a>
+        </div>
+      </div>
+
+      <div class="ba-block">
+        <div class="ba" id="ba">
+          <img src="/img/room-6.avif" alt="Комната с расставленной мебелью" width="1024" height="1024" loading="lazy">
+          <div class="ba-before">
+            <img src="/img/room-0.avif" alt="Та же комната без мебели, только чистовая отделка" width="1024" height="1024" loading="lazy">
+          </div>
+          <div class="ba-line"></div>
+          <button class="ba-grip" id="baGrip" type="button" role="slider"
+                  aria-label="Сравнить пустую и обставленную комнату"
+                  aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" transform="translate(-3 0)"/>
+              <polyline points="9 18 15 12 9 6" transform="translate(3 0)"/>
+            </svg>
+          </button>
+          <span class="ba-tag l">Было</span>
+          <span class="ba-tag r">Стало</span>
+        </div>
+        <p class="ba-hint">Потяните ручку — комната обставится</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="how" class="dark">
   <div class="container">
     <div class="section-head">
@@ -263,30 +309,6 @@ function главная(каталог) {
       <p>${Ф.шаги.length} ${plural(Ф.шаги.length, 'шаг', 'шага', 'шагов')} от заявки до сборки.</p>
     </div>
     <div class="steps">${шаги}</div>
-
-    <!-- Слайдер переехал сюда из первого экрана: рядом с рассказом о том,
-         как идёт работа, «было/стало» объясняет результат, а не отвлекает
-         от товара на входе. -->
-    <div class="ba-block">
-      <div class="ba" id="ba">
-        <img src="/img/room-6.avif" alt="Комната с расставленной мебелью" width="1024" height="1024" loading="lazy">
-        <div class="ba-before">
-          <img src="/img/room-0.avif" alt="Та же комната без мебели, только чистовая отделка" width="1024" height="1024" loading="lazy">
-        </div>
-        <div class="ba-line"></div>
-        <button class="ba-grip" id="baGrip" type="button" role="slider"
-                aria-label="Сравнить пустую и обставленную комнату"
-                aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6" transform="translate(-3 0)"/>
-            <polyline points="9 18 15 12 9 6" transform="translate(3 0)"/>
-          </svg>
-        </button>
-        <span class="ba-tag l">Было</span>
-        <span class="ba-tag r">Стало</span>
-      </div>
-      <p class="ba-hint">Потяните ручку — комната обставится</p>
-    </div>
   </div>
 </section>
 

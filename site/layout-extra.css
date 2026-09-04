@@ -176,7 +176,27 @@ section#hero { padding-top: 46px; }
 .steps { grid-template-columns: repeat(3, 1fr); }
 
 /* Слайдер «было/стало» на новом месте — по центру, не во всю ширину */
-.ba-block { max-width: 620px; margin: 46px auto 0; }
+/* «Было — стало»: слева рассказ, справа картинка.
+   Прежде блок стоял один посреди широкой секции и терялся в пустоте —
+   тот же случай, что был у «Мебель под ключ», и лечится так же: парой. */
+.ba-block { margin: 0; }
+#result .two-col { align-items: center; }
+.result-text { display: flex; flex-direction: column; }
+.result-note { margin-top: 18px; font-size: 15px; line-height: 1.6;
+  color: rgba(248, 246, 242, .78); }
+.result-cta { margin-top: 28px; }
+
+/* Подсказка под слайдером наследовала цвет для светлого фона и на тёмной
+   секции давала контраст 2.09 при норме 4.5 — читалась как призрак.
+   Цвет задаём явно: приглушать её ещё и прозрачностью нельзя, иначе
+   прозрачности перемножатся и текст снова провалится. */
+#result .ba-hint { color: rgba(248, 246, 242, .72); }
+
+@media (max-width: 860px) {
+  /* На телефоне сначала картинка: она объясняет мысль быстрее текста */
+  #result .two-col { display: flex; flex-direction: column-reverse; gap: 26px; }
+  .result-cta .btn { display: block; text-align: center; }
+}
 
 /* Светлый потолок на фото сливался с кремовой карточкой и съедал её край */
 .card-img { position: relative; }
