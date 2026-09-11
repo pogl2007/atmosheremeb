@@ -49,7 +49,6 @@
     .nav-inner { max-width: var(--max); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
     /* Знак нарисован currentColor, поэтому сам перекрашивается вместе с шапкой */
     .logo { display: flex; align-items: center; gap: 11px; line-height: 1; color: var(--primary); }
-    .logo-mark { width: 38px; height: 38px; flex-shrink: 0; }
     .logo-text { display: flex; flex-direction: column; line-height: 1; }
     .logo-main { font-family: var(--font-d); font-size: 22px; font-weight: 700; color: var(--primary); }
     .logo-sub { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secondary); margin-top: 2px; }
@@ -399,7 +398,6 @@
     /* ── FOOTER ── */
     footer { padding: 64px 0 32px; background: var(--primary); color: rgba(255,255,255,0.65); }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-    .footer-mark { width: 40px; height: 40px; display: block; margin-bottom: 10px; }
     .footer-brand .logo-main { color: #fff; margin-bottom: 4px; display: block; font-family: var(--font-d); font-size: 22px; }
     .footer-brand .logo-sub { color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
     .footer-brand p { font-size: 14px; line-height: 1.7; margin-top: 16px; max-width: 280px; }
@@ -516,7 +514,6 @@
       .nav-right { gap: 8px; }
       /* На узких экранах знак меньше, иначе логотип упирается в кнопку */
       .logo { gap: 8px; }
-      .logo-mark { width: 29px; height: 29px; }
       .logo-main { font-size: 19px; }
       .nav-cta { padding: 8px 10px; font-size: 11px; }
       .city-badge { display: none !important; }

@@ -19,18 +19,16 @@
 const ВЕРСИИ = { css: '', js: '', planner: '' };
 const v = метка => метка ? '?v=' + метка : '';
 
-const ЛОГО_ЗНАК = () => `
-      <span class="logo-mark">
-        <img class="lm-light" src="/img/logo-mark.png" srcset="/img/logo-mark@2x.png 2x"
-             width="48" height="40" alt="" aria-hidden="true">
-        <img class="lm-dark" src="/img/logo-mark-light.png" srcset="/img/logo-mark-light@2x.png 2x"
-             width="49" height="40" alt="" aria-hidden="true">
+// Логотип текстовый: знак-домик убран по решению заказчика.
+//
+// Это не картинка, а живой текст в рамке — так он чёткий на любом экране,
+// ничего не весит и сам перекрашивается под тёмную шапку. Прежний знак
+// приходил растром, и на ретине приходилось держать две версии файла.
+const ЛОГОТИП = () => `
+      <span class="logo-box">
+        <span class="logo-main">Атмосфера</span>
+        <span class="logo-sub">мебель на заказ</span>
       </span>`;
-
-// В подвале фон всегда тёмный — там нужен только золотой вариант
-const ЛОГО_ЗНАК_ТЁМНЫЙ = () => `
-      <img class="footer-mark" src="/img/logo-mark-light.png" srcset="/img/logo-mark-light@2x.png 2x"
-           width="49" height="40" alt="" aria-hidden="true">`;
 
 // Пункты меню. active — какой подсветить; сравнение по ключу, а не по адресу,
 // чтобы карточка товара подсвечивала «Каталог».
@@ -117,12 +115,7 @@ function nav(active, категории = []) {
 
   return `<nav id="navbar">
   <div class="nav-inner">
-    <a href="/" class="logo" aria-label="Атмосфера Мебель — на главную">${ЛОГО_ЗНАК()}
-      <span class="logo-text">
-        <span class="logo-main">Атмосфера</span>
-        <span class="logo-sub">Мебель</span>
-      </span>
-    </a>
+    <a href="/" class="logo" aria-label="Атмосфера Мебель — на главную">${ЛОГОТИП()}</a>
     <div class="nav-links">
       ${links}
     </div>
@@ -151,9 +144,7 @@ function footer(категории) {
   return `<footer>
   <div class="container">
     <div class="footer-grid">
-      <div class="footer-brand">${ЛОГО_ЗНАК_ТЁМНЫЙ()}
-        <span class="logo-main">Атмосфера</span>
-        <span class="logo-sub">Мебель</span>
+      <div class="footer-brand">${ЛОГОТИП()}
         <p>Кухни, шкафы и гардеробные на заказ по вашим размерам. Выездной шоу-рум: дизайнер приедет с образцами, замер и проект бесплатно.</p>
       </div>
       <div class="footer-col">

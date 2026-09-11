@@ -50,7 +50,6 @@ nav.over-dark .hamburger span { background: #F8F6F2; }
 .nav-inner { max-width: var(--max); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
 /* Знак нарисован currentColor, поэтому сам перекрашивается вместе с шапкой */
 .logo { display: flex; align-items: center; gap: 11px; line-height: 1; color: var(--primary); }
-.logo-mark { width: 38px; height: 38px; flex-shrink: 0; }
 .logo-text { display: flex; flex-direction: column; line-height: 1; }
 .logo-main { font-family: var(--font-d); font-size: 22px; font-weight: 700; color: var(--primary); }
 .logo-sub { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secondary); margin-top: 2px; }
@@ -400,7 +399,6 @@ nav.over-dark .hamburger span { background: #F8F6F2; }
 /* ── FOOTER ── */
 footer { padding: 64px 0 32px; background: var(--primary); color: rgba(255,255,255,0.65); }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-.footer-mark { width: 40px; height: 40px; display: block; margin-bottom: 10px; }
 .footer-brand .logo-main { color: #fff; margin-bottom: 4px; display: block; font-family: var(--font-d); font-size: 22px; }
 .footer-brand .logo-sub { color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
 .footer-brand p { font-size: 14px; line-height: 1.7; margin-top: 16px; max-width: 280px; }
@@ -517,7 +515,6 @@ footer { padding: 64px 0 32px; background: var(--primary); color: rgba(255,255,2
   .nav-right { gap: 8px; }
   /* На узких экранах знак меньше, иначе логотип упирается в кнопку */
   .logo { gap: 8px; }
-  .logo-mark { width: 29px; height: 29px; }
   .logo-main { font-size: 19px; }
   .nav-cta { padding: 8px 10px; font-size: 11px; }
   .city-badge { display: none !important; }
@@ -1148,7 +1145,6 @@ nav.over-dark { background: transparent; backdrop-filter: none; -webkit-backdrop
 nav.over-dark .logo-main,
 nav.over-dark .nav-links .nav-link { color: #F8F6F2; }
 nav.over-dark .logo-sub { color: rgba(248,246,242,.62); }
-nav.over-dark .logo-mark { color: #F8F6F2; }
 nav.over-dark .nav-links .nav-link.on { color: var(--accent-text-dark); }
 nav.over-dark .hamburger span { background: #F8F6F2; }
 /* Прокрутили — возвращаем подложку, иначе текст ложится прямо на фотографии */
@@ -1164,30 +1160,41 @@ nav.over-dark.scrolled { background: rgba(45,35,27,.86);
   .mobile-menu a .n { color: var(--secondary); opacity: .7; font-size: 12px; }
 }
 
+/* ═══════ Логотип ═══════
+   Текстовый: слово в тонкой золотой рамке и подпись под ним.
+   Знак-домик убран — логотип теперь только из названия.
 
-/* ═══════ Знак логотипа ═══════
-   Растровый: вектора у логотипа нет, исходники пришли картинками.
-   Пропорции у знака не квадратные (примерно 6:5), поэтому старое правило
-   38×38 его бы сплющило — задаём только высоту, ширина считается сама. */
+   Живой текст, а не картинка: чёткий на любом экране, ничего не весит
+   и перекрашивается под тёмную шапку одними стилями. У прежнего знака
+   вектора не было, и на ретине приходилось держать вторую версию файла. */
 
-.logo-mark { display: inline-flex; align-items: center; flex-shrink: 0; }
-.logo-mark img { display: block; height: 34px; width: auto; }
+.logo { display: inline-flex; align-items: center; line-height: 1;
+        color: var(--primary); text-decoration: none; }
 
-/* Светлый и тёмный варианты знака. На шоколадном фоне тёмно-синий контур
-   почти сливается, поэтому там показываем золотой. Переключение — только
-   стилями, без скриптов: класс over-dark и так уже висит на шапке. */
-.logo-mark .lm-dark { display: none; }
-nav.over-dark .logo-mark .lm-light { display: none; }
-nav.over-dark .logo-mark .lm-dark { display: block; }
+.logo-box { display: inline-flex; flex-direction: column; align-items: center;
+            border: 1px solid var(--accent); border-radius: 2px;
+            padding: 7px 16px 6px; }
 
-.hero-mark { display: block; height: 48px; width: auto; flex-shrink: 0; }
-.footer-mark { display: block; height: 40px; width: auto; margin-bottom: 10px; }
+.logo-main { font-family: var(--font-d); font-size: 21px; font-weight: 600;
+             letter-spacing: .02em; color: var(--primary); line-height: 1; }
+
+/* Разрядка добавляет отступ и после последней буквы — сдвигаем обратно,
+   иначе подпись стоит не по центру под словом. */
+.logo-sub { font-size: 8.5px; font-weight: 600; letter-spacing: .26em;
+            text-transform: uppercase; color: var(--accent-text);
+            margin-top: 5px; margin-right: -.26em; line-height: 1; }
+
+/* ── На тёмном фоне ── */
+nav.over-dark .logo-box { border-color: rgba(196, 149, 106, .85); }
+nav.over-dark .logo-main { color: #F8F6F2; }
+nav.over-dark .logo-sub { color: var(--accent); }
+
+footer .logo-box { border-color: rgba(196, 149, 106, .8); margin-bottom: 14px; }
+footer .logo-main { color: #F8F6F2; }
+footer .logo-sub { color: var(--accent); }
 
 @media (max-width: 900px) {
-  .logo-mark img { height: 28px; }
-  .hero-mark { height: 40px; }
+  .logo-box { padding: 6px 12px 5px; }
+  .logo-main { font-size: 17px; }
+  .logo-sub { font-size: 7.5px; letter-spacing: .22em; margin-right: -.22em; }
 }
-
-/* Подпись рядом со знаком: название компании стоит живым текстом,
-   а не картинкой — чётко на любом экране и ничего не весит. */
-.logo-text { display: block; }

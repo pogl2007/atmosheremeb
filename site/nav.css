@@ -37,7 +37,6 @@ nav.over-dark { background: transparent; backdrop-filter: none; -webkit-backdrop
 nav.over-dark .logo-main,
 nav.over-dark .nav-links .nav-link { color: #F8F6F2; }
 nav.over-dark .logo-sub { color: rgba(248,246,242,.62); }
-nav.over-dark .logo-mark { color: #F8F6F2; }
 nav.over-dark .nav-links .nav-link.on { color: var(--accent-text-dark); }
 nav.over-dark .hamburger span { background: #F8F6F2; }
 /* Прокрутили — возвращаем подложку, иначе текст ложится прямо на фотографии */

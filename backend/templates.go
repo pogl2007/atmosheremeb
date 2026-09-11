@@ -55,9 +55,19 @@ const стилиАдминки = `
   .login-card { width: 100%; max-width: 380px; background: var(--surface);
            border: 1px solid var(--border); border-radius: 18px; padding: 34px 30px 30px;
            text-align: center; box-shadow: 0 18px 44px rgba(60, 40, 20, .10); }
-  .login-logo { display: block; margin: 0 auto 14px; border-radius: 12px; }
-  .login-brand { font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
-           color: var(--accent-text); margin-bottom: 10px; }
+  /* Логотип текстовый, как на сайте: слово в тонкой рамке и подпись.
+     Картинки здесь намеренно нет — админка должна открываться,
+     даже если со статикой сайта что-то не так. */
+  .login-logo { display: inline-flex; flex-direction: column; align-items: center;
+           border: 1px solid var(--accent); border-radius: 2px;
+           padding: 9px 20px 8px; margin-bottom: 20px; }
+  .login-logo-main { font-family: Georgia, "Times New Roman", serif; font-size: 24px;
+           font-weight: 600; letter-spacing: .02em; color: var(--primary); line-height: 1; }
+  /* Разрядка добавляет отступ и после последней буквы — сдвигаем обратно,
+     иначе подпись стоит не по центру под словом. */
+  .login-logo-sub { font-size: 9px; font-weight: 600; letter-spacing: .26em;
+           text-transform: uppercase; color: var(--accent-text);
+           margin-top: 6px; margin-right: -.26em; line-height: 1; }
   .login-card h1 { font-size: 22px; margin-bottom: 6px; }
   .login-sub { font-size: 14px; color: var(--secondary); opacity: .8; margin-bottom: 22px; }
   .login-form { text-align: left; }
@@ -86,10 +96,10 @@ const разметкаВхода = `<!DOCTYPE html>
 <div class="wrap">
   <div class="login">
     <div class="login-card">
-      <img class="login-logo" src="/img/logo-mark.png"
-           srcset="/img/logo-mark.png 1x, /img/logo-mark@2x.png 2x"
-           width="56" height="56" alt="">
-      <p class="login-brand">Атмосфера Мебель</p>
+      <span class="login-logo">
+        <span class="login-logo-main">Атмосфера</span>
+        <span class="login-logo-sub">мебель на заказ</span>
+      </span>
       <h1>Панель управления</h1>
       <p class="login-sub">Введите пароль, чтобы продолжить</p>
 
