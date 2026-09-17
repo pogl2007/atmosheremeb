@@ -724,6 +724,15 @@ footer { padding: 64px 0 32px; background: var(--primary); color: rgba(255,255,2
 .filters-more svg { width: 14px; height: 14px; transition: transform .22s ease; }
 .filters-more[aria-expanded="true"] svg { transform: rotate(180deg); }
 
+/* О компании: слоган и цифры */
+.about-slogan { font-family: var(--font-d); font-style: italic; font-size: clamp(19px, 2.4vw, 23px); color: var(--accent-dark, #8a5a33); margin-bottom: 26px; }
+.about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 0 0 36px; }
+.about-stats > div { border: 1px solid rgba(45,35,27,.14); border-radius: 12px; padding: 18px 18px 16px; background: rgba(255,255,255,.5); }
+.about-stats b { display: block; font-family: var(--font-d); font-size: clamp(22px, 3vw, 30px); line-height: 1.1; margin-bottom: 6px; }
+.about-stats span { font-size: 14px; color: #5C554C; line-height: 1.35; display: block; }
+@media (max-width: 640px) { .about-stats { grid-template-columns: 1fr; } }
+.footer-meta-note { flex-basis: 100%; font-size: 11px !important; opacity: .6; }
+
 
 /* ═══════ Блоки многостраничной версии ═══════ */
 
@@ -980,6 +989,28 @@ section#hero { padding-top: 46px; }
   .offer-card { padding: 24px 20px; }
   .offer-cta { padding-top: 22px; }
   .offer-cta .btn { width: 100%; }
+}
+
+/* Бегущая лента отзывов. Скорость привязана к числу карточек (--n),
+   чтобы при добавлении отзывов лента не разгонялась. Наведение — пауза. */
+#reviews { overflow: hidden; }
+.reviews-viewport { overflow: hidden; padding: 6px 0 10px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.reviews-track { display: flex; width: max-content; animation: reviews-run calc(var(--n) * 7s) linear infinite; }
+.reviews-viewport:hover .reviews-track, .reviews-viewport:focus-within .reviews-track { animation-play-state: paused; }
+.reviews-set { display: flex; gap: 18px; padding-right: 18px; }
+.review { width: 340px; margin: 0; background: #fff; border: 1px solid rgba(45,35,27,.1); border-radius: 14px;
+  padding: 22px 22px 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+.review blockquote { margin: 0; font-size: 15px; line-height: 1.55; color: #2C2C2C; }
+.review figcaption { font-size: 14px; color: #5C554C; }
+.review figcaption b { color: #2C2C2C; }
+.review figcaption span { display: block; margin-top: 3px; font-size: 13px; color: #7a5231; }
+@keyframes reviews-run { to { transform: translateX(-50%); } }
+@media (max-width: 640px) { .review { width: 280px; } }
+@media (prefers-reduced-motion: reduce) {
+  .reviews-track { animation: none; }
+  .reviews-viewport { overflow-x: auto; }
 }
 
 

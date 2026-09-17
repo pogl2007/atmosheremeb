@@ -15,7 +15,9 @@ const PUB = path.join(ROOT, 'public');
 const SITE = path.join(ROOT, 'site');
 
 const каталог = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'catalog.json'), 'utf8'));
-const посты = require(path.join(SITE, 'blog-posts.js'));
+// Свежие статьи — первыми
+const посты = [...require(path.join(SITE, 'blog-posts.js')), ...require(path.join(SITE, 'blog-posts-2.js'))]
+  .sort((a, b) => b.date.localeCompare(a.date));
 const { КОНТАКТЫ, частиДляPHP, ВЕРСИИ } = require(path.join(SITE, 'layout.js'));
 const P = require(path.join(SITE, 'pages.js'));
 const P2 = require(path.join(SITE, 'pages2.js'));

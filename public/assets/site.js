@@ -448,6 +448,16 @@ async function applyOverrides() {
   } catch { return; }
   if (!правки || typeof правки !== 'object') return;
 
+  // Корзина хранит имя на момент добавления — после переименования в админке
+  // заявка ушла бы менеджеру со старым названием
+  const вКорзине = cartRead();
+  let переименовано = false;
+  вКорзине.forEach(i => {
+    const п = правки[i.id];
+    if (п && п.name && i.name !== п.name) { i.name = п.name; переименовано = true; }
+  });
+  if (переименовано) cartWrite(вКорзине);
+
   // Карточки в сетке
   document.querySelectorAll('.card [data-cart-btn]').forEach(btn => {
     const п = правки[btn.dataset.id];
@@ -456,6 +466,8 @@ async function applyOverrides() {
     if (п.hidden) { card.remove(); return; }
     if (п.name) {
       card.querySelectorAll('h3 a').forEach(a => a.textContent = п.name);
+      const img = card.querySelector('img');
+      if (img) img.alt = img.alt.replace(/^[^—]*—/, п.name + ' —');
       btn.dataset.name = п.name;
     }
     if (п.price) {

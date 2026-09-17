@@ -41,6 +41,35 @@ const CARD_W = 800, CARD_H = 1000;
 const PARALLEL = 4;
 const МИН_СТОРОНА = 500;   // меньше — это иконка или элемент оформления
 
+// Водяной знак (одобрен заказчиком 16.09.2026): белая рамка «Атмосфера»,
+// прозрачность 55%, правый нижний угол, ширина — 26% короткой стороны.
+// Лёгкая тень снизу-справа, чтобы знак не пропадал на белых фасадах.
+const ЗНАК = path.join(ROOT, 'brand', 'watermark-white.png');
+const ЗНАК_ДОЛЯ = 0.26, ЗНАК_ОТСТУП = 0.035, ЗНАК_ПРОЗРАЧНОСТЬ = 0.55;
+
+async function знак(W, H) {
+  const w = Math.round(Math.min(W, H) * ЗНАК_ДОЛЯ);
+  const pad = Math.round(Math.min(W, H) * ЗНАК_ОТСТУП);
+  const { data, info } = await sharp(ЗНАК).resize(w).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const светлый = Buffer.from(data), тень = Buffer.alloc(data.length);
+  for (let i = 3; i < data.length; i += 4) {
+    светлый[i] = Math.round(data[i] * ЗНАК_ПРОЗРАЧНОСТЬ);
+    тень[i] = Math.round(data[i] * ЗНАК_ПРОЗРАЧНОСТЬ * 0.5);
+  }
+  const raw = { raw: info };
+  const left = W - info.width - pad, top = H - info.height - pad;
+  return [
+    { input: await sharp(тень, raw).blur(Math.max(1, w / 120)).png().toBuffer(), left: left + 1, top: top + 2 },
+    { input: await sharp(светлый, raw).png().toBuffer(), left, top },
+  ];
+}
+
+// Знак ставится на уже уменьшенный кадр, чтобы размер был одинаковым на глаз
+async function сохранитьСоЗнаком(конвейер, quality, файл) {
+  const { data, info } = await конвейер.toBuffer({ resolveWithObject: true });
+  await sharp(data).composite(await знак(info.width, info.height)).avif({ quality }).toFile(файл);
+}
+
 // toColourspace обязателен: среди исходников попадаются одноканальные
 // (в оттенках серого), а поканальный linear на них падает.
 const warm = img => img.toColourspace('srgb')
@@ -130,17 +159,26 @@ async function партиями(items, size, fn) {
       // Одноканальные (в оттенках серого) поканальный linear не принимает:
       // sharp применяет операции в своём порядке, и toColourspace в той же
       // цепочке не успевает развернуть каналы. Разворачиваем отдельным проходом.
+      // Уже обработанные не пережимаем — FORCE=1 пересобирает всё (после смены грейда или знака)
+      const готово = !process.env.FORCE && fs.existsSync(job.full) && fs.existsSync(job.card);
+      if (готово) {
+        const рек = index[job.uid] = index[job.uid] ||
+          { источник: job.источник, имя: job.имя, разделы: job.разделы, photos: [] };
+        рек.photos.push({ n: job.n, full: path.posix.join('img', 'catalog', path.basename(job.full)),
+          card: path.posix.join('img', 'catalog', path.basename(job.card)), w: meta.width, h: meta.height });
+        обработано++;
+        return;
+      }
+
       const вход = meta.channels < 3
         ? await sharp(job.src).toColourspace('srgb').png().toBuffer()
         : job.src;
 
-      await warm(sharp(вход).rotate())
-        .resize(FULL_MAX, FULL_MAX, { fit: 'inside', withoutEnlargement: true })
-        .avif({ quality: 50 }).toFile(job.full);
+      await сохранитьСоЗнаком(warm(sharp(вход).rotate())
+        .resize(FULL_MAX, FULL_MAX, { fit: 'inside', withoutEnlargement: true }).png(), 50, job.full);
 
-      await warm(sharp(вход).rotate())
-        .resize(CARD_W, CARD_H, { fit: 'cover', position: 'attention' })
-        .avif({ quality: 45 }).toFile(job.card);
+      await сохранитьСоЗнаком(warm(sharp(вход).rotate())
+        .resize(CARD_W, CARD_H, { fit: 'cover', position: 'attention' }).png(), 45, job.card);
 
       const рек = index[job.uid] = index[job.uid] ||
         { источник: job.источник, имя: job.имя, разделы: job.разделы, photos: [] };

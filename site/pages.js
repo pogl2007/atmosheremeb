@@ -2,6 +2,7 @@
 
 const { page, schemaOrg, КОНТАКТЫ } = require('./layout.js');
 const Ф = require('./facts.js');
+const ОТЗЫВЫ = require('./reviews.js');
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
   c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -17,6 +18,35 @@ function plural(n, one, few, many) {
 const мб = (значение, заглушка) => заглушка
   ? `<span class="stub">${esc(значение)}</span>`
   : esc(значение);
+
+/* ─────────── Бегущая лента отзывов ─────────── */
+
+// Лента дублируется: вторая копия встык даёт бесшовный цикл при сдвиге на -50%.
+// Копия скрыта от экранных дикторов, чтобы отзывы не зачитывались дважды.
+function лентаОтзывов() {
+  if (!ОТЗЫВЫ.length) return '';
+  const карточки = ОТЗЫВЫ.map(о => `
+      <figure class="review">
+        <blockquote>${esc(о.текст)}</blockquote>
+        <figcaption><b>${esc(о.имя)}</b>${о.город ? `, ${esc(о.город)}` : ''}<span>${esc(о.заказ)}</span></figcaption>
+      </figure>`).join('');
+  return `
+<section id="reviews" aria-label="Отзывы клиентов">
+  <div class="container">
+    <div class="section-head">
+      <h2>Отзывы клиентов</h2>
+      <p>${Ф.лет} лет работы и ${Ф.клиентов} клиентов. Вот что они говорят.</p>
+    </div>
+  </div>
+  <div class="reviews-viewport">
+    <div class="reviews-track" style="--n:${ОТЗЫВЫ.length}">
+      <div class="reviews-set">${карточки}</div>
+      <div class="reviews-set" aria-hidden="true">${карточки}</div>
+    </div>
+  </div>
+</section>
+`;
+}
 
 /* ─────────── Карточка товара в сетке ─────────── */
 
@@ -311,12 +341,12 @@ function главная(каталог) {
     <div class="steps">${шаги}</div>
   </div>
 </section>
-
+${лентаОтзывов()}
 <section>
   <div class="container">
     <div class="section-head">
       <h2>Куда возим</h2>
-      <p>Три региона — доставка и выезд дизайнера в каждом. За их пределы пока не возим.</p>
+      <p>Доставка и выезд дизайнера с образцами в каждом регионе.</p>
     </div>
     <div class="tiles-simple">
       ${Ф.основныеРегионы.map(c => `<div class="city-card"><h3>${esc(c)}</h3><p>Выезд дизайнера и доставка</p></div>`).join('\n      ')}

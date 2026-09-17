@@ -21,3 +21,7 @@ server.log
 *.zip
 *.tar.gz
 /*.jpg
+/*.xlsx
+
+# Локальный server.js пишет сюда тестовые заявки — не в репозиторий и не на сервер
+public/data/

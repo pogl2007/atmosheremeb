@@ -9,7 +9,16 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const meta = require(path.join(ROOT, 'data', 'catalog-meta.js'));
+const meta = [
+  ...require(path.join(ROOT, 'data', 'catalog-meta.js')),
+  ...require(path.join(ROOT, 'data', 'catalog-meta-2.js')),
+];
+const ВИДИМЫЕ = require(path.join(ROOT, 'data', 'catalog-visible.js'));
+const виден = m => {
+  const п = ВИДИМЫЕ[m.cat];
+  if (!п) return true;
+  return Array.isArray(п) ? п.includes(m.name) : !п.кроме.includes(m.name);
+};
 const photos = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'photos-index.json'), 'utf8'));
 
 // Порядок категорий в меню и на странице каталога. Задан вручную:
@@ -29,7 +38,7 @@ const slug = s => [...s.toLowerCase()].map(c => ТАБЛИЦА[c] ?? (/[a-z0-9]/
 
 const проблемы = [];
 
-const products = meta.map((m, i) => {
+const всеТовары = meta.map((m, i) => {
   const рек = photos[m.uid];
   if (!рек) { проблемы.push(`${m.name}: нет записи о снимках (uid ${m.uid})`); return null; }
 
@@ -64,11 +73,23 @@ const products = meta.map((m, i) => {
     priceUnit: null,
     order: i,
     photos: ph.map(p => ({ full: p.full, card: p.card })),
+    visible: виден(m),
+    source: рек.источник,
   };
 }).filter(Boolean);
 
+// Список видимых обязан ссылаться на существующие имена — опечатка молча спрятала бы модель
+Object.entries(ВИДИМЫЕ).forEach(([кат, п]) => (Array.isArray(п) ? п : п.кроме).forEach(имя => {
+  if (!всеТовары.some(t => t.category === кат && t.name === имя)) проблемы.push(`catalog-visible: нет модели «${имя}» в разделе «${кат}»`);
+}));
+
+// Полный перечень (со скрытыми) — для таблицы товаров
+fs.writeFileSync(path.join(ROOT, 'data', 'catalog-all.json'), JSON.stringify(всеТовары, null, 2), 'utf8');
+
+const products = всеТовары.filter(p => p.visible).map(({ visible, source, ...p }) => p);
+
 // Адреса товаров обязаны быть уникальны — иначе одна карточка перекроет другую
-const адреса = products.map(p => p.slug);
+const адреса = всеТовары.map(p => p.slug);
 const дубли = [...new Set(адреса.filter((s, i) => адреса.indexOf(s) !== i))];
 if (дубли.length) проблемы.push(`повторяющиеся адреса: ${дубли.join(', ')}`);
 
@@ -100,9 +121,6 @@ const каталог = {
 };
 
 fs.writeFileSync(path.join(ROOT, 'data', 'catalog.json'), JSON.stringify(каталог, null, 2), 'utf8');
-// Сайт читает каталог из public — так его отдаёт и локальный сервер, и хостинг
-fs.mkdirSync(path.join(ROOT, 'public', 'data'), { recursive: true });
-fs.writeFileSync(path.join(ROOT, 'public', 'data', 'catalog.json'), JSON.stringify(каталог), 'utf8');
 
 console.log('Категория'.padEnd(24), 'товаров'.padStart(8), 'фото'.padStart(6));
 категории.forEach(c => {
@@ -114,7 +132,7 @@ console.log('Планировки:', каталог.filters.layout.map(f => `${f
 console.log('Стили:     ', каталог.filters.style.map(f => `${f.value} ${f.count}`).join(', '));
 console.log('Гаммы:     ', каталог.filters.palette.map(f => `${f.value} ${f.count}`).join(', '));
 
-const весКб = (fs.statSync(path.join(ROOT, 'public', 'data', 'catalog.json')).size / 1024).toFixed(0);
+const весКб = (Buffer.byteLength(JSON.stringify(каталог)) / 1024).toFixed(0);
 console.log(`Файл каталога для сайта: ${весКб} КБ`);
 
 if (проблемы.length) { console.log(`\nПроблемы (${проблемы.length}):`); проблемы.forEach(x => console.log('  ' + x)); }

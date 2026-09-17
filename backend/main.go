@@ -70,6 +70,7 @@ func main() {
 	http.HandleFunc("/api/plan", с.план)
 	http.HandleFunc("/admin/", с.админка)
 	http.HandleFunc("/blog/", с.блог)
+	http.HandleFunc("/product/", с.товар)
 
 	// Эти два файла фронтенд грузит сам. Раньше их раздавал nginx прямо
 	// из папки данных — теперь папки в корне сайта нет.

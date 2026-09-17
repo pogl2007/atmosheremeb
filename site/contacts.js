@@ -24,9 +24,14 @@ module.exports = {
   telegram: null,
   whatsapp: null,
 
+  // Соцсети показываются и в тестовом режиме: это не телефон и не реквизиты
+  vk: 'https://vk.ru/club241448902',
+  instagram: 'https://www.instagram.com/atmosfera_mebel.ru/',
+  max: null,
+
   hours: null,
 
-  cities: ['Москва', 'Саратов', 'Рязань'],
+  cities: ['Москва', 'Саратов'],
 
   // Реквизиты ИП — заполнить после регистрации
   legalName: null,

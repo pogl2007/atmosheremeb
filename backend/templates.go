@@ -243,6 +243,7 @@ const разметкаПанели = `<!DOCTYPE html>
   <div class="card">
     <p class="muted">
       Здесь можно скрыть товар с сайта, переименовать его или проставить цену.
+      Чтобы вернуть исходное название, очистите поле и сохраните.
       Правки применяются сразу, пересборка не нужна. Описания и фотографии
       задаются в коде — добавление новых товаров через админку не предусмотрено.
     </p>
@@ -263,16 +264,22 @@ const разметкаПанели = `<!DOCTYPE html>
           {{if .Правка.Скрыт}}<br><span class="chip">скрыт</span>{{end}}
         </td>
         <td>{{.Раздел}}</td>
-        <form method="post">
-          <input type="hidden" name="csrf" value="{{$.Токен}}">
-          <input type="hidden" name="действие" value="товар">
-          <input type="hidden" name="id" value="{{.Ид}}">
-          <td><input type="checkbox" name="hidden" value="1" style="width:auto"
-                     {{if .Правка.Скрыт}}checked{{end}}></td>
-          <td><input name="name" value="{{.Правка.Название}}" placeholder="{{.Название}}"></td>
-          <td><input name="price" value="{{.Правка.Цена}}" placeholder="договорная"></td>
-          <td><button type="submit">OK</button></td>
-        </form>
+        {{/* Форма не может обрамлять ячейки таблицы: браузер выносит её
+             из <tr>, и поля остаются вне формы — кнопка отправляла пустоту.
+             Поэтому форма лежит в ячейке, а поля привязаны к ней атрибутом form. */}}
+        <td><input type="checkbox" name="hidden" value="1" style="width:auto" form="f{{.Ид}}"
+                   {{if .Правка.Скрыт}}checked{{end}}></td>
+        <td><input name="name" value="{{.Правка.Название}}" placeholder="{{.Название}}" form="f{{.Ид}}" maxlength="60"></td>
+        <td><input name="price" value="{{.Правка.Цена}}" placeholder="договорная" form="f{{.Ид}}" maxlength="40"></td>
+        <td>
+          <form method="post" id="f{{.Ид}}">
+            <input type="hidden" name="csrf" value="{{$.Токен}}">
+            <input type="hidden" name="действие" value="товар">
+            <input type="hidden" name="id" value="{{.Ид}}">
+            <input type="hidden" name="t" value="goods">
+            <button type="submit">Сохранить</button>
+          </form>
+        </td>
       </tr>
     {{end}}
   </table>

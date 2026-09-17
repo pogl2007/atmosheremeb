@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -14,6 +15,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 var (
@@ -386,8 +389,44 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 	}
 	вход = append(вход, map[string]string{"role": "user", "content": вопрос})
 
+	// Простые вопросы — в лёгкую модель, остальное — в основную. Лёгкая у
+	// провайдера нестабильна по скорости (от 3 до 60+ секунд), поэтому ждём её
+	// недолго и при любой неудаче переспрашиваем основную: клиент не должен
+	// видеть «AI недоступен» из-за экономии.
+	модель := с.н.МодельИИ
+	лёгкий := с.н.ЛёгкаяМодельИИ != "" && простойВопрос(вопрос, len(вход)-1)
+	var текст string
+	var err error
+	if лёгкий {
+		модель = с.н.ЛёгкаяМодельИИ
+		текст, err = с.спроситьИИ(модель, системный, вход, с.н.ОжиданиеЛёгкой)
+		if err != nil {
+			log.Printf("лёгкая модель %s: %v — переспрашиваю %s", модель, err, с.н.МодельИИ)
+			модель = с.н.МодельИИ
+		}
+	}
+	if !лёгкий || err != nil {
+		текст, err = с.спроситьИИ(модель, системный, вход, 25*time.Second)
+	}
+	if err != nil {
+		log.Printf("ИИ (%s): %v", модель, err)
+		ответ(w, 200, map[string]any{"ok": false, "error": "AI недоступен"})
+		return
+	}
+
+	// Какая модель ответила — видно в журнале, по нему считаем расходы
+	log.Printf("чат: ответила %s", модель)
+
+	нуженМенеджер := strings.Contains(текст, "[MANAGER]")
+	текст = strings.TrimSpace(strings.ReplaceAll(текст, "[MANAGER]", ""))
+
+	ответ(w, 200, map[string]any{"ok": true, "answer": текст, "needsManager": нуженМенеджер})
+}
+
+// спроситьИИ — один запрос к провайдеру, возвращает текст ответа.
+func (с *Сервер) спроситьИИ(модель, системный string, вход []map[string]string, ожидание time.Duration) (string, error) {
 	полезное, _ := json.Marshal(map[string]any{
-		"model":        с.н.МодельИИ,
+		"model":        модель,
 		"instructions": системный,
 		"input":        вход,
 		// Запас с избытком: часть лимита съедают невидимые reasoning-токены.
@@ -400,14 +439,18 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 	запрос.Header.Set("Content-Type", "application/json")
 	запрос.Header.Set("Authorization", "Bearer "+с.н.КлючИИ)
 
-	клиентИИ := &http.Client{Timeout: 25 * time.Second}
-	ответИИ, err := клиентИИ.Do(запрос)
+	ответИИ, err := (&http.Client{Timeout: ожидание}).Do(запрос)
 	if err != nil {
-		log.Printf("ИИ недоступен: %v", err)
-		ответ(w, 200, map[string]any{"ok": false, "error": "AI недоступен"})
-		return
+		return "", err
 	}
 	defer ответИИ.Body.Close()
+
+	// Провайдер отвечает ошибкой (сменил модели, кончился баланс) — отдаём его
+	// текст в журнал, иначе причина видна только как «пустой ответ»
+	if ответИИ.StatusCode != http.StatusOK {
+		тело, _ := io.ReadAll(io.LimitReader(ответИИ.Body, 500))
+		return "", fmt.Errorf("HTTP %d: %s", ответИИ.StatusCode, тело)
+	}
 
 	// В ответе нет output_text: первым в output идёт элемент reasoning,
 	// поэтому текст ищем в элементе с типом message.
@@ -420,9 +463,7 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 		} `json:"output"`
 	}
 	if err := json.NewDecoder(ответИИ.Body).Decode(&разбор); err != nil {
-		log.Printf("не разобрал ответ ИИ: %v", err)
-		ответ(w, 200, map[string]any{"ok": false, "error": "AI недоступен"})
-		return
+		return "", fmt.Errorf("не разобрал ответ: %w", err)
 	}
 
 	var куски []string
@@ -436,16 +477,40 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-
 	текст := strings.TrimSpace(strings.Join(куски, " "))
 	if текст == "" {
-		log.Print("ИИ вернул пустой ответ")
-		ответ(w, 200, map[string]any{"ok": false, "error": "AI недоступен"})
-		return
+		return "", errors.New("пустой ответ")
 	}
+	return текст, nil
+}
 
-	нуженМенеджер := strings.Contains(текст, "[MANAGER]")
-	текст = strings.TrimSpace(strings.ReplaceAll(текст, "[MANAGER]", ""))
+// Признаки вопроса, где нужно рассуждать: расчёт, размеры, выбор между
+// вариантами, конкретная комната клиента.
+var признакиСложного = []string{
+	"размер", "метр", " м2", "м²", "кв.", "см ", "ширин", "длин", "глубин", "высот",
+	"планиров", "проект", "посовет", "подойд", "подход", "лучше", "выбра", "выбор",
+	"сравн", "отлич", "разниц", "или ", "почему", "как сделать", "как лучше",
+	"материал", "лдсп", "мдф", "эмал", "пластик", "фурнитур", "столешниц",
+	"моя кухня", "у меня", "нам нужно", "мне нужно", "помещени", "комнат", "ниш",
+}
 
-	ответ(w, 200, map[string]any{"ok": true, "answer": текст, "needsManager": нуженМенеджер})
+// простойВопрос — короткий вопрос о фактах компании без контекста переписки:
+// гарантия, сроки, регионы, привет. Ошибиться в сторону «сложного» дешевле,
+// чем отдать лёгкой модели вопрос, где она напутает.
+func простойВопрос(вопрос string, репликВИстории int) bool {
+	в := strings.ToLower(вопрос)
+	if utf8.RuneCountInString(в) > 90 || репликВИстории > 2 || strings.Count(в, "?") > 1 {
+		return false
+	}
+	for _, ц := range в {
+		if unicode.IsDigit(ц) {
+			return false
+		}
+	}
+	for _, п := range признакиСложного {
+		if strings.Contains(в+" ", п) {
+			return false
+		}
+	}
+	return true
 }

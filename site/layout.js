@@ -24,6 +24,12 @@ const v = метка => метка ? '?v=' + метка : '';
 // Это не картинка, а живой текст в рамке — так он чёткий на любом экране,
 // ничего не весит и сам перекрашивается под тёмную шапку. Прежний знак
 // приходил растром, и на ретине приходилось держать две версии файла.
+// Соцсети — только заполненные в contacts.js, в порядке показа
+const СОЦСЕТИ = () => [
+  ['ВКонтакте', КОНТАКТЫ.vk], ['Telegram', КОНТАКТЫ.telegram],
+  ['Max', КОНТАКТЫ.max], ['Instagram*', КОНТАКТЫ.instagram],
+].filter(([, url]) => url).map(([имя, url]) => ({ имя, url }));
+
 const ЛОГОТИП = () => `
       <span class="logo-box">
         <span class="logo-main">Атмосфера</span>
@@ -158,6 +164,10 @@ function footer(категории) {
         <a href="/contacts/">Контакты</a>
         <a href="/cart/">Корзина</a>
       </div>
+      <div class="footer-col">
+        <h4>Мы в соцсетях</h4>
+        ${СОЦСЕТИ().map(с => `<a href="${с.url}" target="_blank" rel="noopener">${с.имя}</a>`).join('\n        ')}
+      </div>
       ${КОНТАКТЫ.тестовыйРежим ? '' : `
       <div class="footer-col">
         <h4>Контакты</h4>
@@ -168,6 +178,7 @@ function footer(категории) {
     <div class="footer-bottom">
       <p>© ${new Date().getFullYear()} Атмосфера Мебель</p>
       <p>${КОНТАКТЫ.тестовыйРежим ? КОНТАКТЫ.надписьТест : КОНТАКТЫ.legalShort}</p>
+      ${КОНТАКТЫ.instagram ? '<p class="footer-meta-note">Instagram принадлежит компании Meta, признанной экстремистской и запрещённой в России.</p>' : ''}
     </div>
   </div>
 </footer>`;
@@ -253,4 +264,5 @@ ${консультант}
 }
 
 module.exports = {
+  СОЦСЕТИ,
   ВЕРСИИ, page, nav, footer, head, schemaOrg, частиДляPHP, МЕНЮ, КОНТАКТЫ };
