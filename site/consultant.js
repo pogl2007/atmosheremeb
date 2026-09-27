@@ -175,9 +175,9 @@ async function sendChat(e) {
 
   chatHistory.push(text);
   const typing = addMsg('печатает…', 'bot typing');
-  const res = await askAI(text);
+  const res = await askAI(text, typing);
   typing.remove();
-  addMsg(изMarkdown(res.answer), 'bot');
+  if (!res.streamed) addMsg(изMarkdown(res.answer), 'bot');
 
   if (res.needsManager && !phoneOffered && !phoneGiven) {
     // Предлагаем оставить номер один раз, развёрнуто
@@ -212,14 +212,103 @@ function изMarkdown(текст) {
     .trim();
 }
 
-// Спрашиваем ИИ на сервере. Пока эндпоинт не настроен — отвечаем по
-// заготовкам и честно передаём сложный вопрос менеджеру.
-async function askAI(question) {
+/* Печать по буквам.
+   Сервер присылает ответ кусками, и куски приходят рывками: то слово,
+   то сразу три строки. Поэтому пишем не сразу, а из очереди по букве —
+   иначе текст дёргается. Скорость подстраивается под длину очереди,
+   чтобы конец длинного ответа не пришлось досматривать. */
+function печатать(узел) {
+  let очередь = '', таймер = null, готово = false, завершение = null;
+
+  const шаг = () => {
+    if (!очередь) {
+      таймер = null;
+      if (готово && завершение) завершение();
+      return;
+    }
+    const за_раз = Math.max(1, Math.ceil(очередь.length / 60));
+    узел.dataset.текст = (узел.dataset.текст || '') + очередь.slice(0, за_раз);
+    очередь = очередь.slice(за_раз);
+    узел.innerHTML = изMarkdown(узел.dataset.текст);
+    cbody.scrollTop = cbody.scrollHeight;
+    таймер = setTimeout(шаг, 16);
+  };
+
+  return {
+    добавить(кусок) {
+      очередь += кусок;
+      if (!таймер) шаг();
+    },
+    // Ждём, пока допечатается уже принятое
+    конец() {
+      готово = true;
+      return new Promise(r => { завершение = r; if (!таймер) r(); });
+    },
+  };
+}
+
+// События SSE разделяются пустой строкой
+const РАЗДЕЛИТЕЛЬ = String.fromCharCode(10, 10);
+
+// Спрашиваем ИИ на сервере: сначала потоком, чтобы текст шёл по буквам.
+// Если поток не получился — обычный ответ целиком, а если и его нет,
+// отвечаем по заготовкам и честно передаём сложный вопрос менеджеру.
+async function askAI(question, typing) {
+  const тело = JSON.stringify({ message: question, history: chatHistory.slice(-6) });
+
+  if (typing && window.ReadableStream) {
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+        body: тело,
+      });
+      if (r.ok && (r.headers.get('Content-Type') || '').includes('text/event-stream')) {
+        const чтение = r.body.getReader();
+        const раскодировать = new TextDecoder();
+        let буфер = '', узел = null, печать = null, ответ = '', менеджер = false, ошибка = false;
+
+        for (;;) {
+          const { value, done } = await чтение.read();
+          if (done) break;
+          буфер += раскодировать.decode(value, { stream: true });
+
+          let граница;
+          while ((граница = буфер.indexOf(РАЗДЕЛИТЕЛЬ)) >= 0) {
+            const строка = буфер.slice(0, граница).trim();
+            буфер = буфер.slice(граница + 2);
+            if (!строка.startsWith('data:')) continue;
+            let с;
+            try { с = JSON.parse(строка.slice(5).trim()); } catch { continue; }
+
+            if (с.error) { ошибка = true; continue; }
+            if (с.delta) {
+              if (!узел) {                      // первый кусок — убираем «печатает…»
+                typing.remove();
+                узел = addMsg('', 'bot');
+                печать = печатать(узел);
+              }
+              ответ += с.delta;
+              печать.добавить(с.delta);
+            }
+            if (с.done) менеджер = !!с.needsManager;
+          }
+        }
+
+        if (узел && ответ) {
+          await печать.конец();
+          return { answer: ответ, needsManager: менеджер, streamed: true };
+        }
+        if (!ошибка) return { answer: 'Не расслышал вопрос, повторите, пожалуйста.', needsManager: false };
+      }
+    } catch (e) { /* пробуем обычным способом */ }
+  }
+
   try {
     const r = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: question, history: chatHistory.slice(-6) })
+      body: тело,
     });
     if (r.ok) {
       const d = await r.json();
