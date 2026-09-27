@@ -25,6 +25,8 @@ type Заявка struct {
 	Телефон string `json:"phone"`
 	Связь   string `json:"contact"`
 	Текст   string `json:"text"`
+	// false — Telegram был недоступен, заявка ждёт в очереди
+	Доставлена bool `json:"delivered"`
 }
 
 type Статья struct {
