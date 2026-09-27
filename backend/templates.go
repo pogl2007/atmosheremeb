@@ -121,7 +121,7 @@ const разметкаВхода = `<!DOCTYPE html>
     </p>
   </div>
 
-  <script>
+  <script nonce="{{.Nonce}}">
     // Показ пароля — на телефоне без этого попасть по длинному паролю тяжело.
     (function () {
       var поле = document.getElementById('pw'), глаз = document.getElementById('pwEye');
@@ -173,8 +173,9 @@ const разметкаПанели = `<!DOCTYPE html>
   {{if not .Заявки}}
     <div class="card">
       <p>Заявок пока нет.</p>
-      <p class="muted">Сюда попадает всё, что ушло в Telegram: заявки из корзины, с форм и планы комнат.
-        Если Telegram недоступен, заявка не сохраняется — журнал ведётся только после успешной отправки.</p>
+      <p class="muted">Сюда попадают заявки из корзины и с форм. Если Telegram был недоступен,
+        заявка всё равно сохраняется здесь и досылается в Telegram, когда он оживёт.
+        Планы комнат уходят только в Telegram.</p>
     </div>
   {{else}}
     {{range .Заявки}}
@@ -227,7 +228,7 @@ const разметкаПанели = `<!DOCTYPE html>
           <a href="/blog/{{.Адрес}}/" target="_blank">открыть ↗</a></div>
         <p style="margin-top:6px;">{{.Описание}}</p>
         <form method="post" style="margin-top:10px;"
-              onsubmit="return confirm('Удалить статью безвозвратно?')">
+              data-confirm="Удалить статью безвозвратно?">
           <input type="hidden" name="csrf" value="{{$.Токен}}">
           <input type="hidden" name="действие" value="удалить-статью">
           <input type="hidden" name="slug" value="{{.Адрес}}">
@@ -290,6 +291,15 @@ const разметкаПанели = `<!DOCTYPE html>
 {{end}}
 
 </div>
+<script nonce="{{.Nonce}}">
+  // Подтверждение удаления. Обработчик в атрибуте onsubmit политика
+  // безопасности страницы не пропустит, поэтому вешаем его отсюда.
+  document.querySelectorAll('form[data-confirm]').forEach(function (форма) {
+    форма.addEventListener('submit', function (e) {
+      if (!confirm(форма.getAttribute('data-confirm'))) e.preventDefault();
+    });
+  });
+</script>
 </body>
 </html>
 `

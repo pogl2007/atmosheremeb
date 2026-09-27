@@ -4,6 +4,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -12,6 +13,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/mail"
 	"regexp"
 	"strings"
 	"time"
@@ -64,9 +66,22 @@ func адрес(r *http.Request) string {
 	return "неизвестно"
 }
 
-func тело(r *http.Request) map[string]any {
+// Пределы тела запроса. Раньше на любой адрес можно было прислать 12 МБ,
+// и сервер держал их в памяти целиком: десяток параллельных запросов —
+// и сотня мегабайт на ровном месте. Заявке и вопросу в чат хватает
+// нескольких килобайт, только план комнаты несёт картинку.
+const (
+	пределФормы = 64 << 10
+	пределПлана = 5 << 20 // PNG до 3 МБ, в base64 он на треть больше
+)
+
+// Сигнатура PNG. Регулярка проверяет только, что пришёл base64, —
+// а внутри могло оказаться что угодно, и оно ушло бы в Telegram.
+var началоPNG = []byte("\x89PNG\r\n\x1a\n")
+
+func тело(r *http.Request, предел int64) map[string]any {
 	m := map[string]any{}
-	сырое, err := io.ReadAll(io.LimitReader(r.Body, 12<<20))
+	сырое, err := io.ReadAll(io.LimitReader(r.Body, предел))
 	if err != nil {
 		return m
 	}
@@ -117,7 +132,7 @@ func (с *Сервер) заявка(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	т := тело(r)
+	т := тело(r, пределФормы)
 
 	// Ловушка: скрытое поле, которое видят и заполняют только боты.
 	// Отвечаем «принято», чтобы бот не искал обход.
@@ -251,10 +266,11 @@ func сообщениеКорзина(т map[string]any) string {
 
 func сообщениеГород(т map[string]any) string {
 	почта := чистить(т["email"], 200)
-	if почта == "" || !strings.Contains(почта, "@") {
+	разобран, err := mail.ParseAddress(почта)
+	if err != nil {
 		return ""
 	}
-	return "Запрос на новый город\nEmail: " + почта
+	return "Запрос на новый город\nEmail: " + разобран.Address
 }
 
 /* ─────────── План комнаты ─────────── */
@@ -269,7 +285,7 @@ func (с *Сервер) план(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	т := тело(r)
+	т := тело(r, пределПлана)
 	if чистить(т["website"], 50) != "" {
 		ответ(w, 200, map[string]any{"ok": true})
 		return
@@ -288,7 +304,11 @@ func (с *Сервер) план(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	двоичное, err := base64.StdEncoding.DecodeString(совпало[1])
-	if err != nil || len(двоичное) > 3_000_000 {
+	if err != nil || !bytes.HasPrefix(двоичное, началоPNG) {
+		ответ(w, 400, map[string]any{"ok": false, "error": "Ожидается PNG в base64"})
+		return
+	}
+	if len(двоичное) > 3_000_000 {
 		ответ(w, 413, map[string]any{"ok": false, "error": "Слишком большой файл"})
 		return
 	}
@@ -339,8 +359,13 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 		ответ(w, 200, map[string]any{"ok": false, "error": "Слишком много сообщений, подождите минуту."})
 		return
 	}
+	if с.лимитИИ.превышен("весь сайт") {
+		log.Print("чат: исчерпан часовой потолок вопросов (AI_LIMIT_HOUR)")
+		ответ(w, 200, map[string]any{"ok": false, "error": "AI недоступен"})
+		return
+	}
 
-	т := тело(r)
+	т := тело(r, пределФормы)
 	вопрос := чистить(т["message"], 500)
 	if вопрос == "" {
 		ответ(w, 400, map[string]any{"ok": false, "error": "Пустой вопрос"})
@@ -375,7 +400,7 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 
 	// Сайт просит поток — отдаём ответ кусками, чтобы он печатался на глазах
 	if strings.Contains(r.Header.Get("Accept"), "text/event-stream") {
-		с.чатПотоком(w, вопрос, системный, вход)
+		с.чатПотоком(r.Context(), w, вопрос, системный, вход)
 		return
 	}
 
@@ -389,14 +414,14 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 	var err error
 	if лёгкий {
 		модель = с.н.ЛёгкаяМодельИИ
-		текст, err = с.спроситьИИ(модель, системный, вход, с.н.ОжиданиеЛёгкой)
+		текст, err = с.спроситьИИ(r.Context(), модель, системный, вход, с.н.ОжиданиеЛёгкой)
 		if err != nil {
 			log.Printf("лёгкая модель %s: %v — переспрашиваю %s", модель, err, с.н.МодельИИ)
 			модель = с.н.МодельИИ
 		}
 	}
 	if !лёгкий || err != nil {
-		текст, err = с.спроситьИИ(модель, системный, вход, 25*time.Second)
+		текст, err = с.спроситьИИ(r.Context(), модель, системный, вход, 25*time.Second)
 	}
 	if err != nil {
 		log.Printf("ИИ (%s): %v", модель, err)
@@ -414,7 +439,9 @@ func (с *Сервер) чат(w http.ResponseWriter, r *http.Request) {
 }
 
 // спроситьИИ — один запрос к провайдеру, возвращает текст ответа.
-func (с *Сервер) спроситьИИ(модель, системный string, вход []map[string]string, ожидание time.Duration) (string, error) {
+// Контекст — от запроса посетителя: закрыл вкладку — запрос к провайдеру
+// обрывается, и мы не платим за ответ, который некому показать.
+func (с *Сервер) спроситьИИ(ctx context.Context, модель, системный string, вход []map[string]string, ожидание time.Duration) (string, error) {
 	полезное, _ := json.Marshal(map[string]any{
 		"model":        модель,
 		"instructions": системный,
@@ -425,7 +452,10 @@ func (с *Сервер) спроситьИИ(модель, системный st
 		"store":             false,
 	})
 
-	запрос, _ := http.NewRequest(http.MethodPost, с.н.АдресИИ, bytes.NewReader(полезное))
+	запрос, err := http.NewRequestWithContext(ctx, http.MethodPost, с.н.АдресИИ, bytes.NewReader(полезное))
+	if err != nil {
+		return "", err
+	}
 	запрос.Header.Set("Content-Type", "application/json")
 	запрос.Header.Set("Authorization", "Bearer "+с.н.КлючИИ)
 
@@ -508,7 +538,7 @@ func простойВопрос(вопрос string, репликВИстори�
 // чатПотоком — тот же выбор модели, что и обычный ответ, но текст уходит
 // клиенту по мере готовности. Пока ни одного куска не отправлено, неудачу
 // лёгкой модели ещё можно исправить, переспросив основную.
-func (с *Сервер) чатПотоком(w http.ResponseWriter, вопрос, системный string, вход []map[string]string) {
+func (с *Сервер) чатПотоком(ctx context.Context, w http.ResponseWriter, вопрос, системный string, вход []map[string]string) {
 	п, ок := новыйПоток(w)
 	if !ок {
 		ответ(w, 200, map[string]any{"ok": false, "error": "AI недоступен"})
@@ -520,14 +550,14 @@ func (с *Сервер) чатПотоком(w http.ResponseWriter, вопрос
 	var err error
 	if лёгкий {
 		модель = с.н.ЛёгкаяМодельИИ
-		err = с.спроситьИИПотоком(модель, системный, вход, с.н.ОжиданиеЛёгкой, п)
+		err = с.спроситьИИПотоком(ctx, модель, системный, вход, с.н.ОжиданиеЛёгкой, п)
 		if err != nil && !п.Отдано {
 			log.Printf("лёгкая модель %s: %v — переспрашиваю %s", модель, err, с.н.МодельИИ)
 			модель = с.н.МодельИИ
 		}
 	}
 	if (!лёгкий || err != nil) && !п.Отдано {
-		err = с.спроситьИИПотоком(модель, системный, вход, 25*time.Second, п)
+		err = с.спроситьИИПотоком(ctx, модель, системный, вход, 25*time.Second, п)
 	}
 
 	if err != nil && !п.Отдано {

@@ -1,6 +1,6 @@
 // Сборщики страниц. Каждая функция возвращает готовый HTML.
 
-const { page, schemaOrg, КОНТАКТЫ } = require('./layout.js');
+const { page, schemaOrg, крошкиСхема, КОНТАКТЫ, СОЦСЕТИ, ПОДПИСЬ_ФОРМЫ } = require('./layout.js');
 const Ф = require('./facts.js');
 const ОТЗЫВЫ = require('./reviews.js');
 
@@ -70,7 +70,7 @@ function карточка(p, { lazy = true } = {}) {
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="${esc(p.id)}"
               data-name="${esc(p.name)}" data-category="${esc(p.category)}"
               data-slug="${p.slug}" data-img="${фото.card}"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>`;
@@ -117,7 +117,11 @@ function фильтры(каталог, { фиксКатегория = null } = 
 
 // Факты бегущей строки. Количество моделей считается из каталога,
 // остальное — условия заказчика из site/facts.js.
+// Годы работы и число клиентов — первыми: для заказа мебели в незнакомой
+// компании это главный довод доверия, а раньше он был только на «О компании».
 const ФАКТЫ = всего => [
+  [`${Ф.лет} лет`, `работаем с ${Ф.основанаГод} года`],
+  [Ф.клиентов[0].toUpperCase() + Ф.клиентов.slice(1), 'довольных клиентов'],
   [String(всего), 'моделей в каталоге'],
   ['Напрямую', 'от производителя'],
   ['Выездной', 'шоу-рум с образцами'],
@@ -395,7 +399,10 @@ ${лентаОтзывов()}
       '@context': 'https://schema.org', '@type': 'Organization',
       name: 'Атмосфера Мебель', url: КОНТАКТЫ.site,
       logo: КОНТАКТЫ.site + '/favicon-512.png',
+      description: 'Кухни, шкафы и гардеробные на заказ. Выездной шоу-рум, производство в ' + Ф.производствоВ + '.',
+      foundingDate: Ф.основанаГод,
       areaServed: Ф.основныеРегионы,
+      sameAs: СОЦСЕТИ().map(с => с.url),
     }),
   });
 }
@@ -427,7 +434,7 @@ function формаЗаявки(метка) {
     <label>Не заполняйте это поле<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
   </div>
   <button class="btn btn-primary btn-block" type="submit">Отправить заявку</button>
-  <p class="product-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+  <p class="product-note">${ПОДПИСЬ_ФОРМЫ}</p>
 </form>`;
 }
 
@@ -554,7 +561,7 @@ function товарСтраница(каталог, p) {
                 data-name="${esc(p.name)}" data-category="${esc(p.category)}"
                 data-slug="${p.slug}" data-img="${p.photos[0].card}"
                 data-label-add="Добавить в корзину"
-                onclick="cartToggleFromButton(this)">Добавить в корзину</button>
+                data-click="cartToggleFromButton">Добавить в корзину</button>
         <a href="/cart/" class="btn btn-ghost">Перейти в корзину</a>
       </div>
       <p class="product-note">Добавление в корзину ничего не оплачивает и ни к чему не обязывает. Дизайнер приедет с образцами, сделает замер и рассчитает стоимость — замер и проект бесплатные.</p>
@@ -575,13 +582,17 @@ function товарСтраница(каталог, p) {
     description: p.short + '. Изготовление по вашим размерам за 7–14 дней. Бесплатный замер и дизайн-проект, цена индивидуальная.',
     canonical: `/product/${p.slug}/`, active: 'catalog',
     категории: каталог.categories, body, ogImage: p.photos[0].full,
-    extraHead: schemaOrg({
+    extraHead: schemaOrg([{
       '@context': 'https://schema.org', '@type': 'Product',
       name: p.name, description: p.text,
       image: p.photos.map(f => `${КОНТАКТЫ.site}/${f.full}`),
       category: p.category,
       brand: { '@type': 'Brand', name: 'Атмосфера Мебель' },
-    }),
+    }, крошкиСхема([
+      ['Главная', '/'], ['Каталог', '/catalog/'],
+      [p.category, `/catalog/?cat=${encodeURIComponent(p.category)}`],
+      [p.name, `/product/${p.slug}/`],
+    ])]),
   });
 }
 

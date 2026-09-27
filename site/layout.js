@@ -100,7 +100,7 @@ function nav(active, категории = []) {
     // Сам «Каталог» доступен первым пунктом внутри списка.
     return `<div class="nav-drop">
         <button type="button" class="nav-link${текущий}" aria-expanded="false"
-                aria-controls="navDropMenu" onclick="toggleCatalogMenu(this)">
+                aria-controls="navDropMenu" data-click="toggleCatalogMenu">
           ${m.label}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -113,10 +113,10 @@ function nav(active, категории = []) {
   }).join('\n      ');
 
   const mobile = [
-    `<a href="/catalog/" onclick="toggleMobileMenu()">Весь каталог</a>`,
-    ...категории.map(c => `<a href="${адресРаздела(c.name)}" class="sub" onclick="toggleMobileMenu()">${c.name}<span class="n">${c.count}</span></a>`),
+    `<a href="/catalog/" data-click="toggleMobileMenu">Весь каталог</a>`,
+    ...категории.map(c => `<a href="${адресРаздела(c.name)}" class="sub" data-click="toggleMobileMenu">${c.name}<span class="n">${c.count}</span></a>`),
     ...МЕНЮ.filter(m => !m.выпадающий && m.key !== 'kitchens' && m.key !== 'wardrobes')
-      .map(m => `<a href="${m.href}" onclick="toggleMobileMenu()">${m.label}</a>`),
+      .map(m => `<a href="${m.href}" data-click="toggleMobileMenu">${m.label}</a>`),
   ].join('\n    ');
 
   return `<nav id="navbar">
@@ -129,9 +129,10 @@ function nav(active, категории = []) {
       <a href="/cart/" class="nav-cta cart-link" aria-label="Корзина">
         Корзина <span class="cart-count" aria-hidden="true">0</span>
       </a>
-      <div class="hamburger" onclick="toggleMobileMenu()" aria-label="Меню">
+      <button type="button" class="hamburger" data-click="toggleMobileMenu"
+              aria-label="Меню" aria-controls="mobileMenu" aria-expanded="false">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
@@ -142,6 +143,11 @@ function nav(active, категории = []) {
   </div>
 </nav>`;
 }
+
+// Строка под кнопкой отправки — одна на все формы. Ведёт на отдельные
+// документы: по 152-ФЗ согласие оформляется отдельно от прочих текстов.
+const ПОДПИСЬ_ФОРМЫ = 'Нажимая кнопку, вы даёте <a href="/soglasie/">согласие на обработку персональных данных</a> ' +
+  'и принимаете <a href="/privacy/">политику конфиденциальности</a>.';
 
 function footer(категории) {
   const катСсылки = категории.map(c =>
@@ -176,7 +182,7 @@ function footer(категории) {
       </div>`}
     </div>
     <div class="footer-bottom">
-      <p>© ${new Date().getFullYear()} Атмосфера Мебель</p>
+      <p>© ${new Date().getFullYear()} Атмосфера Мебель · <a href="/privacy/">Политика конфиденциальности</a></p>
       <p>${КОНТАКТЫ.тестовыйРежим ? КОНТАКТЫ.надписьТест : КОНТАКТЫ.legalShort}</p>
       ${КОНТАКТЫ.instagram ? '<p class="footer-meta-note">Instagram принадлежит компании Meta, признанной экстремистской и запрещённой в России.</p>' : ''}
     </div>
@@ -187,8 +193,8 @@ function footer(категории) {
 // Виджет консультанта одинаков на всех страницах
 const консультант = `
 <div class="cbubble" id="cbubble">
-  <div class="cbubble-label" id="cbubbleLabel" onclick="openChat()">Сообщение от консультанта</div>
-  <button class="cbubble-btn" onclick="openChat()" aria-label="Открыть чат с консультантом">
+  <div class="cbubble-label" id="cbubbleLabel" data-click="openChat">Сообщение от консультанта</div>
+  <button class="cbubble-btn" data-click="openChat" aria-label="Открыть чат с консультантом">
     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
     <span class="cbubble-dot" id="cbubbleDot"></span>
   </button>
@@ -203,22 +209,37 @@ const консультант = `
       <div class="cpanel-title">Консультант «Атмосфера Мебель»</div>
       <div class="cpanel-sub">На связи</div>
     </div>
-    <button class="cpanel-close" onclick="closeChat()" aria-label="Закрыть">×</button>
+    <button class="cpanel-close" data-click="closeChat" aria-label="Закрыть">×</button>
   </div>
   <div class="cpanel-body" id="cbody"></div>
   <div class="cpanel-chips" id="cchips"></div>
-  <form class="cpanel-foot" id="cform" onsubmit="sendChat(event)">
+  <form class="cpanel-foot" id="cform" data-submit="sendChat">
     <input id="cinput" type="text" placeholder="Спросите о мебели…" autocomplete="off">
     <button class="cpanel-send" type="submit" id="csend" aria-label="Отправить">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
     </button>
   </form>
-  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер.</div>
+  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер. <a href="/privacy/">Как мы обращаемся с данными</a></div>
 </div>`;
 
 // Разметка товаров и категорий для поисковиков
+// Можно передать и массив — каждый объект уйдёт отдельным блоком.
+// «<» экранируем: строка «</script>» в описании товара или статьи иначе
+// закрыла бы блок, и остаток текста стал бы разметкой страницы.
 function schemaOrg(объект) {
-  return `<script type="application/ld+json">${JSON.stringify(объект)}</script>`;
+  return [].concat(объект).map(о =>
+    `<script type="application/ld+json">${JSON.stringify(о).replace(/</g, '\\u003c')}</script>`).join('\n');
+}
+
+// Хлебные крошки для поисковика: в выдаче вместо адреса показывается путь
+// «Главная › Каталог › Кухни», и по нему видно, где страница на сайте.
+function крошкиСхема(шаги) {
+  return {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: шаги.map(([name, url], i) => ({
+      '@type': 'ListItem', position: i + 1, name, item: КОНТАКТЫ.site + url,
+    })),
+  };
 }
 
 function page({ title, description, canonical, active, ogImage, body, категории, extraHead = '', extraBody = '' }) {
@@ -265,4 +286,4 @@ ${консультант}
 
 module.exports = {
   СОЦСЕТИ,
-  ВЕРСИИ, page, nav, footer, head, schemaOrg, частиДляPHP, МЕНЮ, КОНТАКТЫ };
+  ВЕРСИИ, page, nav, footer, head, schemaOrg, крошкиСхема, частиДляPHP, МЕНЮ, КОНТАКТЫ, ПОДПИСЬ_ФОРМЫ };

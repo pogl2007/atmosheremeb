@@ -83,7 +83,7 @@ function addMsg(text, who) {
 
 function renderChips() {
   document.getElementById('cchips').innerHTML = canned
-    .map((c, i) => '<button type="button" class="cchip" onclick="askCanned(' + i + ')">' + c.q + '</button>')
+    .map((c, i) => '<button type="button" class="cchip" data-click="askCanned" data-arg="' + i + '">' + c.q + '</button>')
     .join('');
 }
 
@@ -119,7 +119,7 @@ async function sendChat(e) {
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  addMsg(text.replace(/</g, '&lt;'), 'me');
+  addMsg(esc(text), 'me');
 
   // Телефон узнаём по самому сообщению, а не по «режиму ожидания»:
   // человек не обязан оставлять номер и может продолжать спрашивать.

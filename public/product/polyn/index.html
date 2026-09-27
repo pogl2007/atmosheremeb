@@ -27,8 +27,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=5956975c">
+<link rel="stylesheet" href="/assets/site.css?v=eea4baec">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Полынь","description":"Гамма собрана вокруг приглушённого зелёно-серого: изголовье и текстиль держат один тон. У окна стоит туалетный столик с круглым пуфом, вдоль стены — шкаф с зеркальной вставкой, которая добавляет глубины. Над кроватью геометрический светильник на чёрных штангах.","image":["https://atmospheremeb.ru/img/catalog/808868638462-0.avif"],"category":"Спальни","brand":{"@type":"Brand","name":"Атмосфера Мебель"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://atmospheremeb.ru/"},{"@type":"ListItem","position":2,"name":"Каталог","item":"https://atmospheremeb.ru/catalog/"},{"@type":"ListItem","position":3,"name":"Спальни","item":"https://atmospheremeb.ru/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8"},{"@type":"ListItem","position":4,"name":"Полынь","item":"https://atmospheremeb.ru/product/polyn/"}]}</script>
 </head>
 <body>
 <nav id="navbar">
@@ -41,7 +42,7 @@
     <div class="nav-links">
       <div class="nav-drop">
         <button type="button" class="nav-link on" aria-expanded="false"
-                aria-controls="navDropMenu" onclick="toggleCatalogMenu(this)">
+                aria-controls="navDropMenu" data-click="toggleCatalogMenu">
           Каталог
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -67,23 +68,24 @@
       <a href="/cart/" class="nav-cta cart-link" aria-label="Корзина">
         Корзина <span class="cart-count" aria-hidden="true">0</span>
       </a>
-      <div class="hamburger" onclick="toggleMobileMenu()" aria-label="Меню">
+      <button type="button" class="hamburger" data-click="toggleMobileMenu"
+              aria-label="Меню" aria-controls="mobileMenu" aria-expanded="false">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="/catalog/" onclick="toggleMobileMenu()">Весь каталог</a>
-    <a href="/kitchens/" class="sub" onclick="toggleMobileMenu()">Кухни<span class="n">45</span></a>
-    <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5" class="sub" onclick="toggleMobileMenu()">Шкафы и гардеробные<span class="n">42</span></a>
-    <a href="/living/" class="sub" onclick="toggleMobileMenu()">Гостиные<span class="n">8</span></a>
-    <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8" class="sub" onclick="toggleMobileMenu()">Спальни<span class="n">4</span></a>
-    <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5" class="sub" onclick="toggleMobileMenu()">Прихожие<span class="n">5</span></a>
-    <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5" class="sub" onclick="toggleMobileMenu()">Детские<span class="n">4</span></a>
-    <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B" class="sub" onclick="toggleMobileMenu()">Столы<span class="n">1</span></a>
-    <a href="/blog/" onclick="toggleMobileMenu()">Блог</a>
-    <a href="/about/" onclick="toggleMobileMenu()">О компании</a>
-    <a href="/contacts/" onclick="toggleMobileMenu()">Контакты</a>
+    <a href="/catalog/" data-click="toggleMobileMenu">Весь каталог</a>
+    <a href="/kitchens/" class="sub" data-click="toggleMobileMenu">Кухни<span class="n">45</span></a>
+    <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5" class="sub" data-click="toggleMobileMenu">Шкафы и гардеробные<span class="n">42</span></a>
+    <a href="/living/" class="sub" data-click="toggleMobileMenu">Гостиные<span class="n">8</span></a>
+    <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8" class="sub" data-click="toggleMobileMenu">Спальни<span class="n">4</span></a>
+    <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5" class="sub" data-click="toggleMobileMenu">Прихожие<span class="n">5</span></a>
+    <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5" class="sub" data-click="toggleMobileMenu">Детские<span class="n">4</span></a>
+    <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B" class="sub" data-click="toggleMobileMenu">Столы<span class="n">1</span></a>
+    <a href="/blog/" data-click="toggleMobileMenu">Блог</a>
+    <a href="/about/" data-click="toggleMobileMenu">О компании</a>
+    <a href="/contacts/" data-click="toggleMobileMenu">Контакты</a>
     <a href="/cart/" class="nav-cta" style="width:100%;margin-top:8px;text-align:center;">
       Корзина <span class="cart-count" aria-hidden="true">0</span>
     </a>
@@ -136,7 +138,7 @@
                 data-name="Полынь" data-category="Спальни"
                 data-slug="polyn" data-img="img/catalog/808868638462-0-card.avif"
                 data-label-add="Добавить в корзину"
-                onclick="cartToggleFromButton(this)">Добавить в корзину</button>
+                data-click="cartToggleFromButton">Добавить в корзину</button>
         <a href="/cart/" class="btn btn-ghost">Перейти в корзину</a>
       </div>
       <p class="product-note">Добавление в корзину ничего не оплачивает и ни к чему не обязывает. Дизайнер приедет с образцами, сделает замер и рассчитает стоимость — замер и проект бесплатные.</p>
@@ -165,7 +167,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp161"
               data-name="Мансарда" data-category="Спальни"
               data-slug="mansarda" data-img="img/catalog/bp161-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -187,7 +189,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="178716447882"
               data-name="Кашемир" data-category="Спальни"
               data-slug="kashemir" data-img="img/catalog/178716447882-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -209,7 +211,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp111"
               data-name="Облако" data-category="Спальни"
               data-slug="oblako" data-img="img/catalog/mp111-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -251,7 +253,7 @@
       
     </div>
     <div class="footer-bottom">
-      <p>© 2026 Атмосфера Мебель</p>
+      <p>© 2026 Атмосфера Мебель · <a href="/privacy/">Политика конфиденциальности</a></p>
       <p>Сайт тестируется</p>
       <p class="footer-meta-note">Instagram принадлежит компании Meta, признанной экстремистской и запрещённой в России.</p>
     </div>
@@ -259,8 +261,8 @@
 </footer>
 
 <div class="cbubble" id="cbubble">
-  <div class="cbubble-label" id="cbubbleLabel" onclick="openChat()">Сообщение от консультанта</div>
-  <button class="cbubble-btn" onclick="openChat()" aria-label="Открыть чат с консультантом">
+  <div class="cbubble-label" id="cbubbleLabel" data-click="openChat">Сообщение от консультанта</div>
+  <button class="cbubble-btn" data-click="openChat" aria-label="Открыть чат с консультантом">
     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
     <span class="cbubble-dot" id="cbubbleDot"></span>
   </button>
@@ -275,19 +277,19 @@
       <div class="cpanel-title">Консультант «Атмосфера Мебель»</div>
       <div class="cpanel-sub">На связи</div>
     </div>
-    <button class="cpanel-close" onclick="closeChat()" aria-label="Закрыть">×</button>
+    <button class="cpanel-close" data-click="closeChat" aria-label="Закрыть">×</button>
   </div>
   <div class="cpanel-body" id="cbody"></div>
   <div class="cpanel-chips" id="cchips"></div>
-  <form class="cpanel-foot" id="cform" onsubmit="sendChat(event)">
+  <form class="cpanel-foot" id="cform" data-submit="sendChat">
     <input id="cinput" type="text" placeholder="Спросите о мебели…" autocomplete="off">
     <button class="cpanel-send" type="submit" id="csend" aria-label="Отправить">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
     </button>
   </form>
-  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер.</div>
+  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер. <a href="/privacy/">Как мы обращаемся с данными</a></div>
 </div>
 
-<script src="/assets/site.js?v=b307e43d"></script>
+<script src="/assets/site.js?v=2a5b5abb"></script>
 </body>
 </html>

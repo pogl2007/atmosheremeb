@@ -14,6 +14,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -28,11 +29,11 @@ import (
 const метка = "[MANAGER]"
 
 type поток struct {
-	w       http.ResponseWriter
-	сброс   http.Flusher
-	хвост   string        // придержанный кусок, в котором может начинаться метка
-	Текст   strings.Builder // полный ответ — для журнала и разбора метки
-	Отдано  bool          // отправляли ли уже хоть что-то клиенту
+	w      http.ResponseWriter
+	сброс  http.Flusher
+	хвост  string          // придержанный кусок, в котором может начинаться метка
+	Текст  strings.Builder // полный ответ — для журнала и разбора метки
+	Отдано bool            // отправляли ли уже хоть что-то клиенту
 }
 
 func новыйПоток(w http.ResponseWriter) (*поток, bool) {
@@ -90,7 +91,7 @@ func (п *поток) завершить() {
 // спроситьИИПотоком ведёт один запрос к провайдеру и пересылает куски в поток.
 // Пока ничего не отправлено клиенту (п.Отдано == false), ошибку ещё можно
 // исправить — вызывающий перезапрашивает другую модель.
-func (с *Сервер) спроситьИИПотоком(модель, системный string, вход []map[string]string,
+func (с *Сервер) спроситьИИПотоком(ctx context.Context, модель, системный string, вход []map[string]string,
 	доПервогоКуска time.Duration, п *поток) error {
 
 	полезное, _ := json.Marshal(map[string]any{
@@ -103,7 +104,16 @@ func (с *Сервер) спроситьИИПотоком(модель, сис�
 		"stream":            true,
 	})
 
-	запрос, _ := http.NewRequest(http.MethodPost, с.н.АдресИИ, bytes.NewReader(полезное))
+	// Предел на весь ответ всё же нужен: без него провайдер, который шлёт
+	// по байту в минуту, держал бы соединение вечно. Контекст от запроса
+	// посетителя обрывает и чтение, если тот закрыл вкладку.
+	ctx, отмена := context.WithTimeout(ctx, 2*time.Minute)
+	defer отмена()
+
+	запрос, err := http.NewRequestWithContext(ctx, http.MethodPost, с.н.АдресИИ, bytes.NewReader(полезное))
+	if err != nil {
+		return err
+	}
 	запрос.Header.Set("Content-Type", "application/json")
 	запрос.Header.Set("Authorization", "Bearer "+с.н.КлючИИ)
 	запрос.Header.Set("Accept", "text/event-stream")
@@ -141,7 +151,7 @@ func (с *Сервер) спроситьИИПотоком(модель, сис�
 			continue
 		}
 		var событие struct {
-			Тип   string `json:"type"`
+			Тип    string `json:"type"`
 			Дельта string `json:"delta"`
 		}
 		if json.Unmarshal([]byte(данные), &событие) != nil {

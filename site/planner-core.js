@@ -110,7 +110,7 @@ function drawPlan() {
     .filter(n => FOOTPRINT[n] || RUG[n])
     .map(n => {
       const placed = planBlocks.some(b => b.name === n);
-      return `<button type="button" class="plan-chip${placed ? ' placed' : ''}" onclick="planAdd('${n}')">${n}</button>`;
+      return `<button type="button" class="plan-chip${placed ? ' placed' : ''}" data-click="planAdd" data-arg="${n}">${n}</button>`;
     }).join('');
 }
 

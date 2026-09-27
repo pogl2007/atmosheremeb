@@ -22,6 +22,7 @@ const { КОНТАКТЫ, частиДляPHP, ВЕРСИИ } = require(path.joi
 const P = require(path.join(SITE, 'pages.js'));
 const P2 = require(path.join(SITE, 'pages2.js'));
 const P3 = require(path.join(SITE, 'pages3.js'));
+const PL = require(path.join(SITE, 'pages-legal.js'));
 
 let файлов = 0, байт = 0;
 const адреса = [];
@@ -158,13 +159,15 @@ for (const p of каталог.products) {
 записать('/cart/', P2.корзина(каталог));
 записать('/about/', P2.оКомпании(каталог));
 записать('/contacts/', P2.контакты(каталог));
+записать('/privacy/', PL.политика(каталог));
+записать('/soglasie/', PL.согласие(каталог));
 // Планировщик отложен по просьбе заказчика. Код цел (site/pages3.js,
 // site/planner-*.js) — чтобы вернуть, достаточно раскомментировать строку.
 // записать('/planner/', P3.планировщик(каталог));
 записать('/blog/', P2.блогСписок(каталог, посты));
 for (const пост of посты) записать(`/blog/${пост.slug}/`, P2.блогПост(каталог, пост));
 
-// 404 отдаётся Apache напрямую по пути из .htaccess, поэтому это
+// 404 отдают nginx и бекенд (backend/product.go) напрямую, поэтому это
 // единственная страница-файл, а не папка с index.html
 fs.writeFileSync(path.join(PUB, '404.html'), P2.ненайдено(каталог), 'utf8');
 
@@ -236,7 +239,6 @@ Allow: /og-image.jpg
 Disallow: /api/
 Disallow: /admin/
 Disallow: /cart/
-Disallow: /config.php
 
 Sitemap: ${КОНТАКТЫ.site}/sitemap.xml
 `, 'utf8');

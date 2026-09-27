@@ -30,12 +30,12 @@ type Заявка struct {
 }
 
 type Статья struct {
-	Адрес      string `json:"slug"`
-	Заголовок  string `json:"title"`
-	Описание   string `json:"lead"`
-	Текст      string `json:"body"`
-	Дата       string `json:"date"`
-	ДатаЛюдям  string `json:"dateHuman"`
+	Адрес     string `json:"slug"`
+	Заголовок string `json:"title"`
+	Описание  string `json:"lead"`
+	Текст     string `json:"body"`
+	Дата      string `json:"date"`
+	ДатаЛюдям string `json:"dateHuman"`
 }
 
 type Правка struct {
@@ -67,7 +67,9 @@ func открытьХранилище(папка string) (*Хранилище, e
 	return &Хранилище{папка: папка}, nil
 }
 
-func (х *Хранилище) путь(имя string) string { return filepath.Join(х.папка, имя) }
+func (х *Хранилище) путь(имя string) string {
+	return filepath.Join(х.папка, имя)
+}
 
 // ── Чтение и запись JSON ──
 

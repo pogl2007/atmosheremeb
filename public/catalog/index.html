@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=5956975c">
+<link rel="stylesheet" href="/assets/site.css?v=eea4baec">
 
 </head>
 <body>
@@ -41,7 +41,7 @@
     <div class="nav-links">
       <div class="nav-drop">
         <button type="button" class="nav-link on" aria-expanded="false"
-                aria-controls="navDropMenu" onclick="toggleCatalogMenu(this)">
+                aria-controls="navDropMenu" data-click="toggleCatalogMenu">
           Каталог
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -67,23 +67,24 @@
       <a href="/cart/" class="nav-cta cart-link" aria-label="Корзина">
         Корзина <span class="cart-count" aria-hidden="true">0</span>
       </a>
-      <div class="hamburger" onclick="toggleMobileMenu()" aria-label="Меню">
+      <button type="button" class="hamburger" data-click="toggleMobileMenu"
+              aria-label="Меню" aria-controls="mobileMenu" aria-expanded="false">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="/catalog/" onclick="toggleMobileMenu()">Весь каталог</a>
-    <a href="/kitchens/" class="sub" onclick="toggleMobileMenu()">Кухни<span class="n">45</span></a>
-    <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5" class="sub" onclick="toggleMobileMenu()">Шкафы и гардеробные<span class="n">42</span></a>
-    <a href="/living/" class="sub" onclick="toggleMobileMenu()">Гостиные<span class="n">8</span></a>
-    <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8" class="sub" onclick="toggleMobileMenu()">Спальни<span class="n">4</span></a>
-    <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5" class="sub" onclick="toggleMobileMenu()">Прихожие<span class="n">5</span></a>
-    <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5" class="sub" onclick="toggleMobileMenu()">Детские<span class="n">4</span></a>
-    <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B" class="sub" onclick="toggleMobileMenu()">Столы<span class="n">1</span></a>
-    <a href="/blog/" onclick="toggleMobileMenu()">Блог</a>
-    <a href="/about/" onclick="toggleMobileMenu()">О компании</a>
-    <a href="/contacts/" onclick="toggleMobileMenu()">Контакты</a>
+    <a href="/catalog/" data-click="toggleMobileMenu">Весь каталог</a>
+    <a href="/kitchens/" class="sub" data-click="toggleMobileMenu">Кухни<span class="n">45</span></a>
+    <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5" class="sub" data-click="toggleMobileMenu">Шкафы и гардеробные<span class="n">42</span></a>
+    <a href="/living/" class="sub" data-click="toggleMobileMenu">Гостиные<span class="n">8</span></a>
+    <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8" class="sub" data-click="toggleMobileMenu">Спальни<span class="n">4</span></a>
+    <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5" class="sub" data-click="toggleMobileMenu">Прихожие<span class="n">5</span></a>
+    <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5" class="sub" data-click="toggleMobileMenu">Детские<span class="n">4</span></a>
+    <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B" class="sub" data-click="toggleMobileMenu">Столы<span class="n">1</span></a>
+    <a href="/blog/" data-click="toggleMobileMenu">Блог</a>
+    <a href="/about/" data-click="toggleMobileMenu">О компании</a>
+    <a href="/contacts/" data-click="toggleMobileMenu">Контакты</a>
     <a href="/cart/" class="nav-cta" style="width:100%;margin-top:8px;text-align:center;">
       Корзина <span class="cart-count" aria-hidden="true">0</span>
     </a>
@@ -180,7 +181,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="372614639682"
               data-name="Дюна" data-category="Кухни"
               data-slug="dyuna" data-img="img/catalog/372614639682-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -202,7 +203,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="251224183922"
               data-name="Пралине" data-category="Кухни"
               data-slug="praline" data-img="img/catalog/251224183922-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -224,7 +225,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="359613365622"
               data-name="Иней" data-category="Кухни"
               data-slug="iney" data-img="img/catalog/359613365622-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -246,7 +247,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="547336947752"
               data-name="Мастерская" data-category="Кухни"
               data-slug="masterskaya" data-img="img/catalog/547336947752-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -268,7 +269,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="288544677312"
               data-name="Дымка" data-category="Кухни"
               data-slug="dymka" data-img="img/catalog/288544677312-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -290,7 +291,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="303550660382"
               data-name="Сланец" data-category="Кухни"
               data-slug="slanets" data-img="img/catalog/303550660382-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -312,7 +313,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="369673315312"
               data-name="Оникс" data-category="Кухни"
               data-slug="oniks" data-img="img/catalog/369673315312-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -334,7 +335,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="725595295912"
               data-name="Орех" data-category="Кухни"
               data-slug="oreh" data-img="img/catalog/725595295912-1-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -356,7 +357,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="658778472862"
               data-name="Сливки" data-category="Кухни"
               data-slug="slivki" data-img="img/catalog/658778472862-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -378,7 +379,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="668943778052"
               data-name="Трюфель" data-category="Кухни"
               data-slug="tryufel" data-img="img/catalog/668943778052-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -400,7 +401,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="254656245852"
               data-name="Индиго" data-category="Кухни"
               data-slug="indigo" data-img="img/catalog/254656245852-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -422,7 +423,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="101342253122"
               data-name="Ясень" data-category="Кухни"
               data-slug="yasen" data-img="img/catalog/101342253122-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -444,7 +445,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="387847410972"
               data-name="Латте" data-category="Кухни"
               data-slug="latte" data-img="img/catalog/387847410972-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -466,7 +467,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="868651595462"
               data-name="Тёрн" data-category="Кухни"
               data-slug="tern" data-img="img/catalog/868651595462-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -488,7 +489,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="805461328182"
               data-name="Каштан" data-category="Кухни"
               data-slug="kashtan" data-img="img/catalog/805461328182-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -510,7 +511,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="602255980362"
               data-name="Шалфей" data-category="Кухни"
               data-slug="shalfey" data-img="img/catalog/602255980362-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -532,7 +533,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="912903696512"
               data-name="Туман" data-category="Кухни"
               data-slug="tuman" data-img="img/catalog/912903696512-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -554,7 +555,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2729"
               data-name="Дубрава" data-category="Кухни"
               data-slug="dubrava" data-img="img/catalog/mb2729-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -576,7 +577,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2486"
               data-name="Гранат" data-category="Кухни"
               data-slug="granat" data-img="img/catalog/mb2486-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -598,7 +599,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2483"
               data-name="Алебастр" data-category="Кухни"
               data-slug="alebastr" data-img="img/catalog/mb2483-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -620,7 +621,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2422"
               data-name="Жемчуг" data-category="Кухни"
               data-slug="zhemchug" data-img="img/catalog/mb2422-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -642,7 +643,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2399"
               data-name="Патина" data-category="Кухни"
               data-slug="patina" data-img="img/catalog/mb2399-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -664,7 +665,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2263"
               data-name="Крыжовник" data-category="Кухни"
               data-slug="kryzhovnik" data-img="img/catalog/mb2263-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -686,7 +687,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb2254"
               data-name="Сталь" data-category="Кухни"
               data-slug="stal" data-img="img/catalog/mb2254-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -708,7 +709,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1779"
               data-name="Парус" data-category="Кухни"
               data-slug="parus" data-img="img/catalog/mb1779-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -730,7 +731,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1776"
               data-name="Обсидиан" data-category="Кухни"
               data-slug="obsidian" data-img="img/catalog/mb1776-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -752,7 +753,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1770"
               data-name="Сапфир" data-category="Кухни"
               data-slug="sapfir" data-img="img/catalog/mb1770-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -774,7 +775,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1761"
               data-name="Наст" data-category="Кухни"
               data-slug="nast" data-img="img/catalog/mb1761-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -796,7 +797,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1751"
               data-name="Мрамор" data-category="Кухни"
               data-slug="mramor" data-img="img/catalog/mb1751-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -818,7 +819,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1350"
               data-name="Лазурь" data-category="Кухни"
               data-slug="lazur" data-img="img/catalog/mb1350-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -840,7 +841,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1346"
               data-name="Вечер" data-category="Кухни"
               data-slug="vecher" data-img="img/catalog/mb1346-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -862,7 +863,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb999"
               data-name="Горница" data-category="Кухни"
               data-slug="gornitsa" data-img="img/catalog/mb999-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -884,7 +885,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb978"
               data-name="Вереск" data-category="Кухни"
               data-slug="veresk" data-img="img/catalog/mb978-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -906,7 +907,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bs4"
               data-name="Табак" data-category="Кухни"
               data-slug="tabak" data-img="img/catalog/bs4-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -928,7 +929,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp16"
               data-name="Палисандр" data-category="Кухни"
               data-slug="palisandr" data-img="img/catalog/mp16-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -950,7 +951,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp19"
               data-name="Травертин" data-category="Кухни"
               data-slug="travertin" data-img="img/catalog/mp19-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -972,7 +973,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp20"
               data-name="Снежка" data-category="Кухни"
               data-slug="snezhka" data-img="img/catalog/mp20-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -994,7 +995,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp21"
               data-name="Карамель" data-category="Кухни"
               data-slug="karamel" data-img="img/catalog/mp21-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1016,7 +1017,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp25"
               data-name="Эспрессо" data-category="Кухни"
               data-slug="espresso" data-img="img/catalog/mp25-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1038,7 +1039,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp36"
               data-name="Эвкалипт" data-category="Кухни"
               data-slug="evkalipt" data-img="img/catalog/mp36-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1060,7 +1061,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp41"
               data-name="Черника" data-category="Кухни"
               data-slug="chernika" data-img="img/catalog/mp41-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1082,7 +1083,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp44"
               data-name="Грозовая" data-category="Кухни"
               data-slug="grozovaya" data-img="img/catalog/mp44-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1104,7 +1105,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp51"
               data-name="Полевая" data-category="Кухни"
               data-slug="polevaya" data-img="img/catalog/mp51-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1126,7 +1127,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp61"
               data-name="Шоколадница" data-category="Кухни"
               data-slug="shokoladnitsa" data-img="img/catalog/mp61-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1148,7 +1149,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp63"
               data-name="Корица" data-category="Кухни"
               data-slug="koritsa" data-img="img/catalog/mp63-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1170,7 +1171,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="770115051832"
               data-name="Пергамент" data-category="Шкафы и гардеробные"
               data-slug="pergament" data-img="img/catalog/770115051832-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1192,7 +1193,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="484667491572"
               data-name="Кварц" data-category="Шкафы и гардеробные"
               data-slug="kvarts" data-img="img/catalog/484667491572-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1214,7 +1215,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="393202537672"
               data-name="Незабудка" data-category="Шкафы и гардеробные"
               data-slug="nezabudka" data-img="img/catalog/393202537672-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1236,7 +1237,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="755309067682"
               data-name="Пудра" data-category="Шкафы и гардеробные"
               data-slug="pudra" data-img="img/catalog/755309067682-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1258,7 +1259,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="690535615362"
               data-name="Агат" data-category="Шкафы и гардеробные"
               data-slug="agat" data-img="img/catalog/690535615362-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1280,7 +1281,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="216205660752"
               data-name="Сумерки" data-category="Шкафы и гардеробные"
               data-slug="sumerki" data-img="img/catalog/216205660752-2-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1302,7 +1303,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="868587615602"
               data-name="Кружево" data-category="Шкафы и гардеробные"
               data-slug="kruzhevo" data-img="img/catalog/868587615602-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1324,7 +1325,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="686798080532"
               data-name="Уют" data-category="Шкафы и гардеробные"
               data-slug="uyut" data-img="img/catalog/686798080532-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1346,7 +1347,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="801752954012"
               data-name="Ольха" data-category="Шкафы и гардеробные"
               data-slug="olha" data-img="img/catalog/801752954012-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1368,7 +1369,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="562265881152"
               data-name="Ателье" data-category="Шкафы и гардеробные"
               data-slug="atele" data-img="img/catalog/562265881152-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1390,7 +1391,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="691555270452"
               data-name="Тишина" data-category="Шкафы и гардеробные"
               data-slug="tishina" data-img="img/catalog/691555270452-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1412,7 +1413,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="987829648702"
               data-name="Мёд" data-category="Шкафы и гардеробные"
               data-slug="med" data-img="img/catalog/987829648702-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1434,7 +1435,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1591"
               data-name="Ставень" data-category="Шкафы и гардеробные"
               data-slug="staven" data-img="img/catalog/mb1591-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1456,7 +1457,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1588"
               data-name="Короб" data-category="Шкафы и гардеробные"
               data-slug="korob" data-img="img/catalog/mb1588-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1478,7 +1479,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1585"
               data-name="Смородина" data-category="Шкафы и гардеробные"
               data-slug="smorodina" data-img="img/catalog/mb1585-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1500,7 +1501,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1582"
               data-name="Полотно" data-category="Шкафы и гардеробные"
               data-slug="polotno" data-img="img/catalog/mb1582-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1522,7 +1523,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1579"
               data-name="Глянец" data-category="Шкафы и гардеробные"
               data-slug="glyanets" data-img="img/catalog/mb1579-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1544,7 +1545,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1576"
               data-name="Амальгама" data-category="Шкафы и гардеробные"
               data-slug="amalgama" data-img="img/catalog/mb1576-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1566,7 +1567,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1573"
               data-name="Тюль" data-category="Шкафы и гардеробные"
               data-slug="tyul" data-img="img/catalog/mb1573-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1588,7 +1589,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1570"
               data-name="Янтарь" data-category="Шкафы и гардеробные"
               data-slug="yantar" data-img="img/catalog/mb1570-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1610,7 +1611,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1567"
               data-name="Берёза" data-category="Шкафы и гардеробные"
               data-slug="bereza" data-img="img/catalog/mb1567-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1632,7 +1633,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1564"
               data-name="Лента" data-category="Шкафы и гардеробные"
               data-slug="lenta" data-img="img/catalog/mb1564-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1654,7 +1655,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1561"
               data-name="Блик" data-category="Шкафы и гардеробные"
               data-slug="blik" data-img="img/catalog/mb1561-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1676,7 +1677,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1558"
               data-name="Хрусталь" data-category="Шкафы и гардеробные"
               data-slug="hrustal" data-img="img/catalog/mb1558-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1698,7 +1699,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1555"
               data-name="Кисея" data-category="Шкафы и гардеробные"
               data-slug="kiseya" data-img="img/catalog/mb1555-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1720,7 +1721,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1552"
               data-name="Тень" data-category="Шкафы и гардеробные"
               data-slug="ten" data-img="img/catalog/mb1552-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1742,7 +1743,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1550"
               data-name="Кедр" data-category="Шкафы и гардеробные"
               data-slug="kedr" data-img="img/catalog/mb1550-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1764,7 +1765,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb1544"
               data-name="Слюда" data-category="Шкафы и гардеробные"
               data-slug="slyuda" data-img="img/catalog/mb1544-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1786,7 +1787,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5031"
               data-name="Рассвет" data-category="Шкафы и гардеробные"
               data-slug="rassvet" data-img="img/catalog/mb5031-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1808,7 +1809,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5028"
               data-name="Отсвет" data-category="Шкафы и гардеробные"
               data-slug="otsvet" data-img="img/catalog/mb5028-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1830,7 +1831,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5037"
               data-name="Мох" data-category="Шкафы и гардеробные"
               data-slug="moh" data-img="img/catalog/mb5037-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1852,7 +1853,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5034"
               data-name="Пастель" data-category="Шкафы и гардеробные"
               data-slug="pastel" data-img="img/catalog/mb5034-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1874,7 +1875,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bs1"
               data-name="Опушка" data-category="Шкафы и гардеробные"
               data-slug="opushka" data-img="img/catalog/bs1-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1896,7 +1897,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bs20"
               data-name="Позолота" data-category="Шкафы и гардеробные"
               data-slug="pozolota" data-img="img/catalog/bs20-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1918,7 +1919,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bs21"
               data-name="Клавиши" data-category="Шкафы и гардеробные"
               data-slug="klavishi" data-img="img/catalog/bs21-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1940,7 +1941,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bs23"
               data-name="Латунь" data-category="Шкафы и гардеробные"
               data-slug="latun" data-img="img/catalog/bs23-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1962,7 +1963,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp75"
               data-name="Капучино" data-category="Шкафы и гардеробные"
               data-slug="kapuchino" data-img="img/catalog/mp75-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -1984,7 +1985,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp95"
               data-name="Гардероб" data-category="Шкафы и гардеробные"
               data-slug="garderob" data-img="img/catalog/mp95-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2006,7 +2007,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp170"
               data-name="Зеркальная" data-category="Шкафы и гардеробные"
               data-slug="zerkalnaya" data-img="img/catalog/bp170-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2028,7 +2029,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp171"
               data-name="Мокрый асфальт" data-category="Шкафы и гардеробные"
               data-slug="mokryy-asfalt" data-img="img/catalog/bp171-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2050,7 +2051,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp172"
               data-name="Анфилада" data-category="Шкафы и гардеробные"
               data-slug="anfilada" data-img="img/catalog/bp172-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2072,7 +2073,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp173"
               data-name="Кофейня" data-category="Шкафы и гардеробные"
               data-slug="kofeynya" data-img="img/catalog/bp173-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2094,7 +2095,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="474844542672"
               data-name="Заря" data-category="Гостиные"
               data-slug="zarya" data-img="img/catalog/474844542672-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2116,7 +2117,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="240347990152"
               data-name="Штиль" data-category="Гостиные"
               data-slug="shtil" data-img="img/catalog/240347990152-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2138,7 +2139,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5024"
               data-name="Вороной" data-category="Гостиные"
               data-slug="voronoy" data-img="img/catalog/mb5024-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2160,7 +2161,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5021"
               data-name="Очаг" data-category="Гостиные"
               data-slug="ochag" data-img="img/catalog/mb5021-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2182,7 +2183,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb5014"
               data-name="Эркер" data-category="Гостиные"
               data-slug="erker" data-img="img/catalog/mb5014-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2204,7 +2205,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp163"
               data-name="Кинозал" data-category="Гостиные"
               data-slug="kinozal" data-img="img/catalog/bp163-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2226,7 +2227,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp78"
               data-name="Библиотека" data-category="Гостиные"
               data-slug="biblioteka" data-img="img/catalog/mp78-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2248,7 +2249,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp82"
               data-name="Соты" data-category="Гостиные"
               data-slug="soty" data-img="img/catalog/mp82-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2270,7 +2271,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="808868638462"
               data-name="Полынь" data-category="Спальни"
               data-slug="polyn" data-img="img/catalog/808868638462-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2292,7 +2293,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="178716447882"
               data-name="Кашемир" data-category="Спальни"
               data-slug="kashemir" data-img="img/catalog/178716447882-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2314,7 +2315,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp111"
               data-name="Облако" data-category="Спальни"
               data-slug="oblako" data-img="img/catalog/mp111-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2336,7 +2337,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bp161"
               data-name="Мансарда" data-category="Спальни"
               data-slug="mansarda" data-img="img/catalog/bp161-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2358,7 +2359,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="774749817772"
               data-name="Ваниль" data-category="Прихожие"
               data-slug="vanil" data-img="img/catalog/774749817772-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2380,7 +2381,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="498463257462"
               data-name="Полумесяц" data-category="Прихожие"
               data-slug="polumesyats" data-img="img/catalog/498463257462-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2402,7 +2403,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="553842067592"
               data-name="Сени" data-category="Прихожие"
               data-slug="seni" data-img="img/catalog/553842067592-1-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2424,7 +2425,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="bs22"
               data-name="Дуга" data-category="Прихожие"
               data-slug="duga" data-img="img/catalog/bs22-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2446,7 +2447,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp106"
               data-name="Луна" data-category="Прихожие"
               data-slug="luna" data-img="img/catalog/mp106-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2468,7 +2469,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="215230402262"
               data-name="Причал" data-category="Детские"
               data-slug="prichal" data-img="img/catalog/215230402262-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2490,7 +2491,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="822201463482"
               data-name="Мачта" data-category="Детские"
               data-slug="machta" data-img="img/catalog/822201463482-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2512,7 +2513,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="526085945862"
               data-name="Кокон" data-category="Детские"
               data-slug="kokon" data-img="img/catalog/526085945862-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2534,7 +2535,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mp11"
               data-name="Скалолаз" data-category="Детские"
               data-slug="skalolaz" data-img="img/catalog/mp11-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2556,7 +2557,7 @@
       <button class="btn btn-ghost btn-sm" data-cart-btn data-id="mb4766"
               data-name="Верстак" data-category="Столы"
               data-slug="verstak" data-img="img/catalog/mb4766-0-card.avif"
-              onclick="cartToggleFromButton(this)">В корзину</button>
+              data-click="cartToggleFromButton">В корзину</button>
     </div>
   </div>
 </article>
@@ -2602,7 +2603,7 @@
       
     </div>
     <div class="footer-bottom">
-      <p>© 2026 Атмосфера Мебель</p>
+      <p>© 2026 Атмосфера Мебель · <a href="/privacy/">Политика конфиденциальности</a></p>
       <p>Сайт тестируется</p>
       <p class="footer-meta-note">Instagram принадлежит компании Meta, признанной экстремистской и запрещённой в России.</p>
     </div>
@@ -2610,8 +2611,8 @@
 </footer>
 
 <div class="cbubble" id="cbubble">
-  <div class="cbubble-label" id="cbubbleLabel" onclick="openChat()">Сообщение от консультанта</div>
-  <button class="cbubble-btn" onclick="openChat()" aria-label="Открыть чат с консультантом">
+  <div class="cbubble-label" id="cbubbleLabel" data-click="openChat">Сообщение от консультанта</div>
+  <button class="cbubble-btn" data-click="openChat" aria-label="Открыть чат с консультантом">
     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
     <span class="cbubble-dot" id="cbubbleDot"></span>
   </button>
@@ -2626,19 +2627,19 @@
       <div class="cpanel-title">Консультант «Атмосфера Мебель»</div>
       <div class="cpanel-sub">На связи</div>
     </div>
-    <button class="cpanel-close" onclick="closeChat()" aria-label="Закрыть">×</button>
+    <button class="cpanel-close" data-click="closeChat" aria-label="Закрыть">×</button>
   </div>
   <div class="cpanel-body" id="cbody"></div>
   <div class="cpanel-chips" id="cchips"></div>
-  <form class="cpanel-foot" id="cform" onsubmit="sendChat(event)">
+  <form class="cpanel-foot" id="cform" data-submit="sendChat">
     <input id="cinput" type="text" placeholder="Спросите о мебели…" autocomplete="off">
     <button class="cpanel-send" type="submit" id="csend" aria-label="Отправить">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
     </button>
   </form>
-  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер.</div>
+  <div class="cpanel-note">Отвечает ИИ-помощник. Точную стоимость назовёт менеджер. <a href="/privacy/">Как мы обращаемся с данными</a></div>
 </div>
 
-<script src="/assets/site.js?v=b307e43d"></script>
+<script src="/assets/site.js?v=2a5b5abb"></script>
 </body>
 </html>

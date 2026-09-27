@@ -2,18 +2,16 @@
   "name": "atmosphere-mebel",
   "version": "1.0.0",
   "private": true,
-  "description": "Атмосфера Мебель — сайт с формой заявки, отправляющей сообщения в Telegram через серверный прокси",
-  "main": "server.js",
+  "description": "Атмосфера Мебель — статический сайт мебели на заказ; сборка на Node, бекенд на Go (backend/)",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "build": "node tools/build-site.js",
+    "preview": "node tools/preview.js",
+    "test": "cd backend && go test ./..."
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
     "sharp": "^0.35.3",
     "undici": "^8.9.0"
   },

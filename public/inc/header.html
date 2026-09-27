@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=5956975c">
+<link rel="stylesheet" href="/assets/site.css?v=eea4baec">
 </head>
 <body>
 <nav id="navbar">
@@ -40,7 +40,7 @@
     <div class="nav-links">
       <div class="nav-drop">
         <button type="button" class="nav-link" aria-expanded="false"
-                aria-controls="navDropMenu" onclick="toggleCatalogMenu(this)">
+                aria-controls="navDropMenu" data-click="toggleCatalogMenu">
           Каталог
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -66,23 +66,24 @@
       <a href="/cart/" class="nav-cta cart-link" aria-label="Корзина">
         Корзина <span class="cart-count" aria-hidden="true">0</span>
       </a>
-      <div class="hamburger" onclick="toggleMobileMenu()" aria-label="Меню">
+      <button type="button" class="hamburger" data-click="toggleMobileMenu"
+              aria-label="Меню" aria-controls="mobileMenu" aria-expanded="false">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="/catalog/" onclick="toggleMobileMenu()">Весь каталог</a>
-    <a href="/kitchens/" class="sub" onclick="toggleMobileMenu()">Кухни<span class="n">45</span></a>
-    <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5" class="sub" onclick="toggleMobileMenu()">Шкафы и гардеробные<span class="n">42</span></a>
-    <a href="/living/" class="sub" onclick="toggleMobileMenu()">Гостиные<span class="n">8</span></a>
-    <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8" class="sub" onclick="toggleMobileMenu()">Спальни<span class="n">4</span></a>
-    <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5" class="sub" onclick="toggleMobileMenu()">Прихожие<span class="n">5</span></a>
-    <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5" class="sub" onclick="toggleMobileMenu()">Детские<span class="n">4</span></a>
-    <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B" class="sub" onclick="toggleMobileMenu()">Столы<span class="n">1</span></a>
-    <a href="/blog/" onclick="toggleMobileMenu()">Блог</a>
-    <a href="/about/" onclick="toggleMobileMenu()">О компании</a>
-    <a href="/contacts/" onclick="toggleMobileMenu()">Контакты</a>
+    <a href="/catalog/" data-click="toggleMobileMenu">Весь каталог</a>
+    <a href="/kitchens/" class="sub" data-click="toggleMobileMenu">Кухни<span class="n">45</span></a>
+    <a href="/catalog/?cat=%D0%A8%D0%BA%D0%B0%D1%84%D1%8B%20%D0%B8%20%D0%B3%D0%B0%D1%80%D0%B4%D0%B5%D1%80%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5" class="sub" data-click="toggleMobileMenu">Шкафы и гардеробные<span class="n">42</span></a>
+    <a href="/living/" class="sub" data-click="toggleMobileMenu">Гостиные<span class="n">8</span></a>
+    <a href="/catalog/?cat=%D0%A1%D0%BF%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8" class="sub" data-click="toggleMobileMenu">Спальни<span class="n">4</span></a>
+    <a href="/catalog/?cat=%D0%9F%D1%80%D0%B8%D1%85%D0%BE%D0%B6%D0%B8%D0%B5" class="sub" data-click="toggleMobileMenu">Прихожие<span class="n">5</span></a>
+    <a href="/catalog/?cat=%D0%94%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B5" class="sub" data-click="toggleMobileMenu">Детские<span class="n">4</span></a>
+    <a href="/catalog/?cat=%D0%A1%D1%82%D0%BE%D0%BB%D1%8B" class="sub" data-click="toggleMobileMenu">Столы<span class="n">1</span></a>
+    <a href="/blog/" data-click="toggleMobileMenu">Блог</a>
+    <a href="/about/" data-click="toggleMobileMenu">О компании</a>
+    <a href="/contacts/" data-click="toggleMobileMenu">Контакты</a>
     <a href="/cart/" class="nav-cta" style="width:100%;margin-top:8px;text-align:center;">
       Корзина <span class="cart-count" aria-hidden="true">0</span>
     </a>

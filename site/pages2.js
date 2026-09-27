@@ -1,6 +1,6 @@
 // Страницы без каталога: заявка, о компании, контакты, блог, планировщик.
 
-const { page, КОНТАКТЫ, СОЦСЕТИ } = require('./layout.js');
+const { page, schemaOrg, крошкиСхема, КОНТАКТЫ, СОЦСЕТИ, ПОДПИСЬ_ФОРМЫ } = require('./layout.js');
 const { esc, формаЗаявки } = require('./pages.js');
 const Ф = require('./facts.js');
 
@@ -56,7 +56,7 @@ function корзина(каталог) {
         <label>Не заполняйте это поле<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
       </div>
       <button class="btn btn-primary btn-block" type="submit">Отправить заявку</button>
-      <p class="product-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+      <p class="product-note">${ПОДПИСЬ_ФОРМЫ}</p>
     </form>
   </div>
 </div>`;
@@ -238,11 +238,13 @@ function блогПост(каталог, пост) {
     description: пост.lead,
     canonical: `/blog/${пост.slug}/`, active: 'blog',
     категории: каталог.categories, body,
-    extraHead: `<script type="application/ld+json">${JSON.stringify({
+    extraHead: schemaOrg([{
       '@context': 'https://schema.org', '@type': 'Article',
       headline: пост.title, description: пост.lead, datePublished: пост.date,
       author: { '@type': 'Organization', name: 'Атмосфера Мебель' },
-    })}</script>`,
+      publisher: { '@type': 'Organization', name: 'Атмосфера Мебель', url: КОНТАКТЫ.site },
+      mainEntityOfPage: `${КОНТАКТЫ.site}/blog/${пост.slug}/`,
+    }, крошкиСхема([['Главная', '/'], ['Блог', '/blog/'], [пост.title, `/blog/${пост.slug}/`]])]),
   });
 }
 

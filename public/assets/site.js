@@ -28,6 +28,36 @@ function toast(text) {
   toastTimer = setTimeout(() => el.classList.remove('on'), 2600);
 }
 
+/* ═══════════ Обработчики из разметки ═══════════
+   В разметке нет onclick="…": вместо него data-click="имяФункции"
+   (и data-arg, если функции нужен аргумент), data-submit и data-change.
+   Встроенные обработчики — это скрипт внутри HTML, а политика безопасности
+   сайта (CSP) такие запрещает: это главная защита от внедрённого кода.
+   Вызываем только функции из списка — иначе внедрённая разметка могла бы
+   дёрнуть любую глобальную функцию браузера. */
+const ДЕЙСТВИЯ_РАЗМЕТКИ = new Set([
+  'toggleMobileMenu', 'toggleCatalogMenu', 'cartToggleFromButton',
+  'openChat', 'closeChat', 'sendChat', 'askCanned',
+  // Планировщик: функции в planner.js, который грузится только на его странице
+  'плВыбрать', 'плНазад', 'плРазмер', 'плОтправить', 'planAdd', 'planAuto', 'planClear',
+]);
+
+function вызватьИзРазметки(e, атрибут) {
+  const узел = e.target && e.target.closest ? e.target.closest('[' + атрибут + ']') : null;
+  if (!узел) return;
+  const имя = узел.getAttribute(атрибут);
+  const функция = ДЕЙСТВИЯ_РАЗМЕТКИ.has(имя) ? window[имя] : null;
+  if (typeof функция !== 'function') return;
+  if (атрибут === 'data-click') {
+    функция(узел.dataset.arg !== undefined ? узел.dataset.arg : узел, e);
+  } else {
+    функция(e);
+  }
+}
+document.addEventListener('click', e => вызватьИзРазметки(e, 'data-click'));
+document.addEventListener('submit', e => вызватьИзРазметки(e, 'data-submit'));
+document.addEventListener('change', e => вызватьИзРазметки(e, 'data-change'));
+
 /* ═══════════ Заявки ═══════════
    Сервер при сбое отвечает 200 с ok:false, чтобы в консоли клиента не мигали
    красные ошибки. Поэтому разбираем именно тело ответа, а не статус. */
@@ -126,7 +156,10 @@ function cartPaintButtons(root = document) {
 
 function toggleMobileMenu() {
   const m = document.getElementById('mobileMenu');
-  if (m) m.classList.toggle('open');
+  if (!m) return;
+  const открыт = m.classList.toggle('open');
+  const кнопка = document.querySelector('.hamburger');
+  if (кнопка) кнопка.setAttribute('aria-expanded', String(открыт));
 }
 
 // Выпадающий список разделов под кнопкой «Каталог»
@@ -484,8 +517,13 @@ async function applyOverrides() {
     if (п && п.name) {
       const h1 = document.querySelector('.product-info h1');
       if (h1) h1.textContent = п.name;
+      // Заголовок уже собран бекендом с новым именем и описанием модели.
+      // Раньше он здесь затирался коротким «Имя | Атмосфера Мебель», и вкладка
+      // и закладки теряли описание. Меняем имя только если его ещё нет.
+      if (!document.title.includes(п.name)) {
+        document.title = document.title.replace(/^[^—|]*/, п.name + ' ');
+      }
       главная.dataset.name = п.name;
-      document.title = п.name + ' | Атмосфера Мебель';
     }
     if (п && п.price) {
       document.querySelectorAll('.spec dd').forEach(dd => {
@@ -724,7 +762,7 @@ function addMsg(text, who) {
 
 function renderChips() {
   document.getElementById('cchips').innerHTML = canned
-    .map((c, i) => '<button type="button" class="cchip" onclick="askCanned(' + i + ')">' + c.q + '</button>')
+    .map((c, i) => '<button type="button" class="cchip" data-click="askCanned" data-arg="' + i + '">' + c.q + '</button>')
     .join('');
 }
 
@@ -760,7 +798,7 @@ async function sendChat(e) {
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  addMsg(text.replace(/</g, '&lt;'), 'me');
+  addMsg(esc(text), 'me');
 
   // Телефон узнаём по самому сообщению, а не по «режиму ожидания»:
   // человек не обязан оставлять номер и может продолжать спрашивать.

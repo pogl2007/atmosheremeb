@@ -17,8 +17,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"golang.org/x/net/html/atom"
 	xhtml "golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 )
 
 // Разрешённая разметка. Текст пишет владелец сайта через админку, за паролем,

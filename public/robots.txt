@@ -9,6 +9,5 @@ Allow: /og-image.jpg
 Disallow: /api/
 Disallow: /admin/
 Disallow: /cart/
-Disallow: /config.php
 
 Sitemap: https://atmospheremeb.ru/sitemap.xml

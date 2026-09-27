@@ -20,13 +20,20 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 )
 
 const (
-	КукаСессии    = "atmosfera_admin"
-	ЖизньСессии   = 8 * time.Hour
-	ЗаявокНаЭкран = 200
+	КукаСессии     = "atmosfera_admin"
+	ЖизньСессии    = 8 * time.Hour
+	ЗаявокНаЭкран  = 200
 	ТоваровНаЭкран = 200
+
+	// Потолки полей из админки. Форма за паролем, но записанное здесь
+	// уходит на публичные страницы и в каждый запрос каталога.
+	пределЗаголовка = 200
+	пределОписания  = 400
+	пределСтатьи    = 100_000
 )
 
 var толькоАдрес = regexp.MustCompile(`[^a-z0-9-]`)
@@ -124,6 +131,19 @@ func (с *Сервер) админка(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store, private")
 	w.Header().Set("X-Frame-Options", "DENY")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Referrer-Policy", "no-referrer")
+
+	// Скрипты на странице — только наши, помеченные разовым ключом. Даже если
+	// в заявку или название товара когда-нибудь пролезет разметка, чужой
+	// скрипт в админке не выполнится, а данные не уйдут на сторонний адрес.
+	ключСкрипта := случайнаяСтрока()
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; "+
+		"script-src 'nonce-"+ключСкрипта+"'; style-src 'unsafe-inline'; img-src 'self'; "+
+		"form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
+
+	// Формам админки мегабайта с запасом; без предела ParseForm принял бы 10 МБ
+	// от кого угодно, даже не вошедшего
+	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 
 	ключ := ""
 	if кука, err := r.Cookie(КукаСессии); err == nil {
@@ -146,17 +166,22 @@ func (с *Сервер) админка(w http.ResponseWriter, r *http.Request) {
 
 		if !вошёл {
 			if пароль := r.PostFormValue("password"); пароль != "" {
-				// Пауза против перебора: на живом человеке незаметна,
-				// а скорость подбора режет на порядки. Основную защиту
-				// даёт лимит на nginx, это второй рубеж.
-				time.Sleep(400 * time.Millisecond)
-				if с.парольВерный(пароль) {
-					новыйКлюч, _ := с.Сессии.создать()
-					с.поставитьКуку(w, r, новыйКлюч)
-					http.Redirect(w, r, "/admin/", http.StatusSeeOther)
-					return
+				// Лимит попыток с адреса — основная защита от перебора. Одна
+				// пауза не спасала: сто параллельных запросов ждут её одновременно.
+				if с.лимитВходов.превышен(адрес(r)) {
+					log.Printf("админка: слишком много попыток входа с %s", адрес(r))
+					ошибкаВхода = "Слишком много попыток. Подождите десять минут."
+				} else {
+					// Пауза на живом человеке незаметна, а подбор замедляет
+					time.Sleep(400 * time.Millisecond)
+					if с.парольВерный(пароль) {
+						новыйКлюч, _ := с.Сессии.создать()
+						с.поставитьКуку(w, r, новыйКлюч)
+						http.Redirect(w, r, "/admin/", http.StatusSeeOther)
+						return
+					}
+					ошибкаВхода = "Неверный пароль"
 				}
-				ошибкаВхода = "Неверный пароль"
 			}
 		} else {
 			// Любое изменение данных требует токен из формы: без него чужая
@@ -171,10 +196,10 @@ func (с *Сервер) админка(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !вошёл {
-		с.показатьВход(w, ошибкаВхода)
+		с.показатьВход(w, ошибкаВхода, ключСкрипта)
 		return
 	}
-	с.показатьПанель(w, r, сессия, сообщение)
+	с.показатьПанель(w, r, сессия, сообщение, ключСкрипта)
 }
 
 func (с *Сервер) поставитьКуку(w http.ResponseWriter, r *http.Request, ключ string) {
@@ -216,13 +241,18 @@ func (с *Сервер) действие(r *http.Request) string {
 		if заголовок == "" {
 			return "Заголовок пустой — статья не сохранена"
 		}
+		текст := strings.TrimSpace(r.PostFormValue("body"))
+		// Обрезать молча нельзя — пропал бы конец статьи. Лучше сказать.
+		if utf8.RuneCountInString(текст) > пределСтатьи {
+			return "Текст длиннее 100 000 символов — статья не сохранена"
+		}
 
 		теперь := time.Now()
 		новая := Статья{
 			Адрес:     адресСтатьи,
-			Заголовок: заголовок,
-			Описание:  strings.TrimSpace(r.PostFormValue("lead")),
-			Текст:     strings.TrimSpace(r.PostFormValue("body")),
+			Заголовок: обрезать(заголовок, пределЗаголовка),
+			Описание:  обрезать(strings.TrimSpace(r.PostFormValue("lead")), пределОписания),
+			Текст:     текст,
 			Дата:      теперь.Format("2006-01-02"),
 			ДатаЛюдям: теперь.Format("02.01.2006"),
 		}
@@ -256,15 +286,27 @@ func (с *Сервер) действие(r *http.Request) string {
 
 	case "товар":
 		ид := r.PostFormValue("id")
-		if ид == "" {
-			return ""
+		// Правку принимаем только для товара, который есть в каталоге: иначе
+		// в overrides.json, который грузит каждый посетитель, можно было бы
+		// складывать что угодно под любыми ключами
+		известен := false
+		for _, т := range читатьJSON(с.хранилище, "admin-products.json", []Товар{}) {
+			if т.Ид == ид {
+				известен = true
+				break
+			}
+		}
+		if ид == "" || !известен {
+			return "Такого товара нет в каталоге"
 		}
 		правки := читатьJSON(с.хранилище, "overrides.json", map[string]Правка{})
 
+		// Те же пределы, что у полей формы: maxlength в браузере — подсказка,
+		// а не защита
 		запись := Правка{
 			Скрыт:    r.PostFormValue("hidden") != "",
-			Цена:     strings.TrimSpace(r.PostFormValue("price")),
-			Название: strings.TrimSpace(r.PostFormValue("name")),
+			Цена:     обрезать(strings.TrimSpace(r.PostFormValue("price")), 40),
+			Название: обрезать(strings.TrimSpace(r.PostFormValue("name")), 60),
 		}
 		// Пустая запись — значит правок нет, и её надо убрать целиком,
 		// иначе файл со временем зарастает пустышками.
@@ -284,6 +326,7 @@ func (с *Сервер) действие(r *http.Request) string {
 /* ─────────── Показ ─────────── */
 
 type даннымиПанели struct {
+	Nonce     string
 	Вкладка   string
 	Сообщение string
 	Токен     string
@@ -292,7 +335,7 @@ type даннымиПанели struct {
 	Заявки []видЗаявки
 	Посты  []Статья
 
-	Товары    []видТовара
+	Товары       []видТовара
 	ВсегоТоваров int
 }
 
@@ -308,14 +351,14 @@ type видТовара struct {
 	Правка Правка
 }
 
-func (с *Сервер) показатьВход(w http.ResponseWriter, ошибка string) {
+func (с *Сервер) показатьВход(w http.ResponseWriter, ошибка, ключСкрипта string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := шаблонВхода.Execute(w, map[string]string{"Ошибка": ошибка}); err != nil {
+	if err := шаблонВхода.Execute(w, map[string]string{"Ошибка": ошибка, "Nonce": ключСкрипта}); err != nil {
 		log.Printf("не отрисовал вход: %v", err)
 	}
 }
 
-func (с *Сервер) показатьПанель(w http.ResponseWriter, r *http.Request, сессия Сессия, сообщение string) {
+func (с *Сервер) показатьПанель(w http.ResponseWriter, r *http.Request, сессия Сессия, сообщение, ключСкрипта string) {
 	вкладка := r.URL.Query().Get("t")
 	if вкладка != "blog" && вкладка != "goods" {
 		вкладка = "orders"
@@ -323,6 +366,7 @@ func (с *Сервер) показатьПанель(w http.ResponseWriter, r *h
 	поиск := strings.TrimSpace(r.URL.Query().Get("q"))
 
 	данные := даннымиПанели{
+		Nonce:     ключСкрипта,
 		Вкладка:   вкладка,
 		Сообщение: сообщение,
 		Токен:     сессия.ТокенФормы,

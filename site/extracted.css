@@ -61,7 +61,8 @@
     .city-badge.visible { display: inline-block; }
     .nav-cta { background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background 0.25s, transform 0.2s; white-space: nowrap; }
     .nav-cta:hover { background: #b08055; transform: translateY(-1px); }
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px;
+                 background: none; border: 0; color: inherit; font: inherit; }
     .hamburger span { width: 24px; height: 2px; background: var(--primary); border-radius: 2px; transition: 0.3s; display: block; }
     .mobile-menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 24px; flex-direction: column; gap: 16px; box-shadow: var(--sh2); }
     .mobile-menu.open { display: flex; }

@@ -5,7 +5,7 @@
 // планировщик стал самостоятельным инструментом: выбираешь тип комнаты,
 // задаёшь размеры и расставляешь мебель сам.
 
-const { page, ВЕРСИИ } = require('./layout.js');
+const { page, ВЕРСИИ, ПОДПИСЬ_ФОРМЫ } = require('./layout.js');
 
 const КОМНАТЫ = [
   ['Кухня', 'M7 30h50v23H7zM7 39h50M32 30v23'],
@@ -18,7 +18,7 @@ const КОМНАТЫ = [
 
 function планировщик(каталог) {
   const плитки = КОМНАТЫ.map(([имя, path]) => `
-      <button type="button" class="room-pick" data-room="${имя}" onclick="плВыбрать('${имя}')">
+      <button type="button" class="room-pick" data-room="${имя}" data-click="плВыбрать" data-arg="${имя}">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg>
         <span>${имя}</span>
@@ -41,16 +41,16 @@ function планировщик(каталог) {
     <div class="planner-layout">
       <div>
         <div class="planner-size">
-          <button class="btn btn-ghost btn-sm" type="button" onclick="плНазад()">← Другая комната</button>
-          <label>Ширина, м <input id="plW" type="number" min="1.5" max="12" step="0.1" onchange="плРазмер()"></label>
-          <label>Глубина, м <input id="plH" type="number" min="1.5" max="12" step="0.1" onchange="плРазмер()"></label>
+          <button class="btn btn-ghost btn-sm" type="button" data-click="плНазад">← Другая комната</button>
+          <label>Ширина, м <input id="plW" type="number" min="1.5" max="12" step="0.1" data-change="плРазмер"></label>
+          <label>Глубина, м <input id="plH" type="number" min="1.5" max="12" step="0.1" data-change="плРазмер"></label>
         </div>
 
         <div class="plan-stage" id="planStage"></div>
         <div class="plan-hint">Перетащите мебель внутрь комнаты. Двойное касание по предмету — повернуть на 90°</div>
         <div class="plan-tools">
-          <button type="button" onclick="planAuto()">Расставить за меня</button>
-          <button type="button" onclick="planClear()">Очистить</button>
+          <button type="button" data-click="planAuto">Расставить за меня</button>
+          <button type="button" data-click="planClear">Очистить</button>
         </div>
         <div class="plan-palette">
           <div class="plan-palette-title">Мебель</div>
@@ -58,7 +58,7 @@ function планировщик(каталог) {
         </div>
       </div>
 
-      <form class="cart-form" onsubmit="плОтправить(event)">
+      <form class="cart-form" data-submit="плОтправить">
         <h3>Прислать план нам</h3>
         <p class="hint">Отправим менеджеру картинку вашей расстановки вместе с размерами комнаты.</p>
         <div class="field">
@@ -84,7 +84,7 @@ function планировщик(каталог) {
           <label>Не заполняйте это поле<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
         </div>
         <button class="btn btn-primary btn-block" type="submit">Отправить план</button>
-        <p class="product-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+        <p class="product-note">${ПОДПИСЬ_ФОРМЫ}</p>
       </form>
     </div>
   </div>
