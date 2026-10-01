@@ -94,6 +94,10 @@ func (п *поток) завершить() {
 func (с *Сервер) спроситьИИПотоком(ctx context.Context, модель, системный string, вход []map[string]string,
 	доПервогоКуска time.Duration, п *поток) error {
 
+	if с.гига != nil {
+		return с.гига.гигаПоток(ctx, модель, системный, вход, доПервогоКуска, п)
+	}
+
 	полезное, _ := json.Marshal(map[string]any{
 		"model":             модель,
 		"instructions":      системный,

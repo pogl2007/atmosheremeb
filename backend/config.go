@@ -22,6 +22,11 @@ type Настройки struct {
 	МодельИИ string
 	// Дешёвая модель для простых вопросов; пусто — всё идёт в МодельИИ
 	ЛёгкаяМодельИИ string
+
+	// GigaChat: ключ авторизации пуст — работаем на прежнем провайдере
+	ГигаКлюч       string
+	ГигаScope      string
+	ГигаСертификат string
 	ОжиданиеЛёгкой time.Duration
 	// Потолок вопросов консультанту в час со всего сайта — защита баланса
 	ВопросовИИВЧас int
@@ -49,6 +54,9 @@ func прочитатьНастройки() Настройки {
 		КлючИИ:         os.Getenv("AI_API_KEY"),
 		МодельИИ:       строка("AI_MODEL", "gpt-5.6-terra"),
 		ЛёгкаяМодельИИ: os.Getenv("AI_MODEL_LIGHT"),
+		ГигаКлюч:       os.Getenv("GIGACHAT_AUTH_KEY"),
+		ГигаScope:      строка("GIGACHAT_SCOPE", "GIGACHAT_API_PERS"),
+		ГигаСертификат: строка("GIGACHAT_CA", "/etc/atmosfera/ru-ca.pem"),
 		СольАдмина:     os.Getenv("ADMIN_SALT"),
 		ХешАдмина:      os.Getenv("ADMIN_HASH"),
 		ПапкаДанных:    строка("DATA_DIR", "/var/lib/atmosfera"),
