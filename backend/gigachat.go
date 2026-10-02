@@ -36,14 +36,16 @@ import (
 	"time"
 )
 
-const (
-	ГигаАдресТокена = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
-	ГигаАдресЧата   = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
-)
+const ГигаАдресТокена = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
+
+// Адрес чата настраивается: на api.giga.chat живут модели третьего поколения
+// (GigaChat-3-Ultra и другие), которых нет на прежнем адресе.
+const ГигаАдресЧатаПоУмолчанию = "https://api.giga.chat/v1/chat/completions"
 
 type Гига struct {
 	ключ   string // ключ авторизации (Basic), из /etc/atmosfera/atmosfera.env
 	scope  string
+	адрес  string
 	клиент *http.Client
 
 	замок   sync.Mutex
@@ -53,12 +55,15 @@ type Гига struct {
 
 // открытьГигу собирает клиента с доверием к сертификату Минцифры.
 // Пустой ключ — значит GigaChat не настроен, работаем на прежнем провайдере.
-func открытьГигу(ключ, scope, путьСертификата string) (*Гига, error) {
+func открытьГигу(ключ, scope, путьСертификата, адресЧата string) (*Гига, error) {
 	if ключ == "" {
 		return nil, nil
 	}
 	if scope == "" {
 		scope = "GIGACHAT_API_PERS"
+	}
+	if адресЧата == "" {
+		адресЧата = ГигаАдресЧатаПоУмолчанию
 	}
 
 	набор, err := x509.SystemCertPool()
@@ -76,6 +81,7 @@ func открытьГигу(ключ, scope, путьСертификата stri
 	return &Гига{
 		ключ:  ключ,
 		scope: scope,
+		адрес: адресЧата,
 		клиент: &http.Client{
 			Timeout:   90 * time.Second,
 			Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: набор, MinVersion: tls.VersionTLS12}},
@@ -149,7 +155,7 @@ func (г *Гига) запрос(ctx context.Context, тело map[string]any, �
 		if err != nil {
 			return nil, err
 		}
-		запрос, _ := http.NewRequestWithContext(ctx, http.MethodPost, ГигаАдресЧата, bytes.NewReader(полезное))
+		запрос, _ := http.NewRequestWithContext(ctx, http.MethodPost, г.адрес, bytes.NewReader(полезное))
 		запрос.Header.Set("Content-Type", "application/json")
 		запрос.Header.Set("Accept", "application/json")
 		запрос.Header.Set("Authorization", "Bearer "+токен)

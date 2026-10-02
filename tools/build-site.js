@@ -204,6 +204,34 @@ for (const [имя, пусто] of [['overrides.json', '{}'], ['blog.json', '[]'
   if (!fs.existsSync(п)) fs.writeFileSync(п, пусто, 'utf8');
 }
 
+// База знаний для консультанта: каталог и статьи блога. Нужна, чтобы ИИ
+// отвечал по нашим товарам, а не по общим представлениям о мебели.
+// Собирается здесь, потому что здесь уже есть и каталог, и статьи.
+const чистоТекст = html => String(html || '')
+  .replace(/<\/(p|li|h2|h3|ul|ol)>/gi, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/gi, ' ')
+  .replace(/\s+/g, ' ').trim();
+
+fs.writeFileSync(path.join(ДАННЫЕ, 'knowledge.json'), JSON.stringify({
+  собрано: new Date().toISOString(),
+  товары: каталог.products.map(p => ({
+    имя: p.name, раздел: p.category, адрес: `/product/${p.slug}/`,
+    планировка: p.layout, стиль: p.style, гамма: p.palette,
+    состав: p.items, кратко: p.short, описание: p.text,
+  })),
+  // Статьи режем по разделам: в подсказку попадёт нужный кусок, а не вся статья
+  статьи: посты.flatMap(с => {
+    const куски = String(с.body).split(/<h2>/i);
+    return куски.map((кусок, i) => {
+      const заголовок = i === 0 ? с.title : чистоТекст(кусок.split('</h2>')[0]);
+      const текст = чистоТекст(i === 0 ? кусок : кусок.split('</h2>').slice(1).join(' '));
+      return текст.length < 120 ? null
+        : { статья: с.title, раздел: заголовок, адрес: `/blog/${с.slug}/`, текст: текст.slice(0, 1200) };
+    }).filter(Boolean);
+  }),
+}), 'utf8');
+
 // Список товаров для админки: только то, что ей нужно показать в таблице,
 // без описаний и галерей — иначе страница админки весила бы под мегабайт.
 fs.writeFileSync(path.join(ДАННЫЕ, 'admin-products.json'),

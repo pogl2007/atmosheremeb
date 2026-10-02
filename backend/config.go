@@ -27,6 +27,7 @@ type Настройки struct {
 	ГигаКлюч       string
 	ГигаScope      string
 	ГигаСертификат string
+	ГигаАдресЧата  string
 	ОжиданиеЛёгкой time.Duration
 	// Потолок вопросов консультанту в час со всего сайта — защита баланса
 	ВопросовИИВЧас int
@@ -57,6 +58,7 @@ func прочитатьНастройки() Настройки {
 		ГигаКлюч:       os.Getenv("GIGACHAT_AUTH_KEY"),
 		ГигаScope:      строка("GIGACHAT_SCOPE", "GIGACHAT_API_PERS"),
 		ГигаСертификат: строка("GIGACHAT_CA", "/etc/atmosfera/ru-ca.pem"),
+		ГигаАдресЧата:  os.Getenv("GIGACHAT_API_URL"),
 		СольАдмина:     os.Getenv("ADMIN_SALT"),
 		ХешАдмина:      os.Getenv("ADMIN_HASH"),
 		ПапкаДанных:    строка("DATA_DIR", "/var/lib/atmosfera"),
