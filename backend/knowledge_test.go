@@ -31,7 +31,7 @@ func TestСправка(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	б := открытьБазу(папка)
+	б := открытьБазу(папка, nil)
 
 	проверки := []struct {
 		вопрос string
