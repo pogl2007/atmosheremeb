@@ -77,6 +77,38 @@ async function sendRequest(payload) {
 
 // Телефон приводим к +7XXXXXXXXXX: берём последние 10 цифр, поэтому и
 // 8999…, и +7999…, и 999… дают один и тот же результат.
+/* Телефон и имя из обычной фразы.
+   Бот спрашивает «как вас зовут и на какой номер перезвонить», и человек
+   отвечает «Владислав, +7 900 123-45-67». Раньше чат ждал сообщение из одних
+   цифр, такую реплику не узнавал — и заявка не уходила, хотя бот бодро
+   отвечал «номер получен». Теперь номер ищем внутри текста, а остаток,
+   если он похож на имя, подставляем в заявку. */
+const ТЕЛЕФОН_В_ТЕКСТЕ = /(?:\+?7|8)?[\s(\-]*\d{3}[\s)\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d)/;
+
+function разобратьКонтакт(текст) {
+  const строка = String(текст || '');
+  const найдено = строка.match(ТЕЛЕФОН_В_ТЕКСТЕ);
+  if (!найдено) return null;
+
+  const цифры = найдено[0].replace(/\D/g, '');
+  // 10 цифр — без кода страны, 11 — с 7 или 8 в начале. Больше или меньше —
+  // это не телефон, а размеры или артикул.
+  if (цифры.length < 10 || цифры.length > 11) return null;
+  if (цифры.length === 11 && !/^[78]/.test(цифры)) return null;
+
+  const остаток = строка.replace(найдено[0], ' ')
+    .replace(/(меня\s+)?зовут|телефон|номер|мой|это|тел\.?|phone/giu, ' ')
+    .replace(/[^\p{L}\s-]/gu, ' ')
+    .replace(/\s+/g, ' ').trim();
+
+  // Имя — одно-два слова буквами. Фразу «перезвоните завтра после обеда»
+  // в поле имени менеджеру отдавать незачем.
+  const имя = /^[\p{L}][\p{L}\s-]{1,39}$/u.test(остаток) && остаток.split(' ').length <= 2
+    ? остаток : '';
+
+  return { phone: '+7' + цифры.slice(-10), name: имя };
+}
+
 function normalizePhone(raw) {
   const digits = String(raw || '').replace(/\D/g, '');
   if (digits.length < 10) return null;
@@ -710,10 +742,12 @@ const CONTACT_SWITCH = [
   { re: /телеграм\p{L}*|telegram|(^|[^\p{L}])тг([^\p{L}]|$)/iu, value: 'telegram', name: 'Telegram' },
 ];
 
-// Сжатая суть переписки — чтобы менеджер сразу видел, о чём человек спрашивал
+// Сжатая суть переписки — чтобы менеджер сразу видел, о чём человек спрашивал.
+// Берём только вопросы клиента: ответы бота менеджеру не нужны.
 function chatSummary() {
-  if (!chatHistory.length) return '';
-  const joined = chatHistory.map(q => q.replace(/\s+/g, ' ').trim()).filter(Boolean).join(' · ');
+  const вопросы = chatHistory.filter(р => р.role === 'user').map(р => р.text.replace(/\s+/g, ' ').trim());
+  if (!вопросы.length) return '';
+  const joined = вопросы.filter(Boolean).join(' · ');
   return joined.length > 400 ? joined.slice(0, 397) + '…' : joined;
 }
 
@@ -802,15 +836,13 @@ async function sendChat(e) {
 
   // Телефон узнаём по самому сообщению, а не по «режиму ожидания»:
   // человек не обязан оставлять номер и может продолжать спрашивать.
-  const digits = text.replace(/\D/g, '');
-  if (digits.length >= 10 && digits.length <= 12 && /^[\d\s()+-]+$/.test(text)) {
-    // Всегда берём последние 10 цифр: и 8XXX…, и 7XXX…, и без кода
-    // приводятся к +7XXXXXXXXXX, который ждёт сервер.
-    givenPhone = '+7' + digits.slice(-10);
+  const контакт = разобратьКонтакт(text);
+  if (контакт) {
+    givenPhone = контакт.phone;
     const t = addMsg('Отправляю…', 'bot typing');
     const res = await sendRequest({
       kind: 'consult',
-      name: 'Из чата',
+      name: контакт.name || 'Из чата',
       phone: givenPhone,
       city: document.getElementById('cfCity') ? document.getElementById('cfCity').value : '',
       contact: 'call',
@@ -852,18 +884,30 @@ async function sendChat(e) {
     }
   }
 
-  chatHistory.push(text);
+  chatHistory.push({ role: 'user', text });
   const typing = addMsg('печатает…', 'bot typing');
   const res = await askAI(text, typing);
   typing.remove();
   if (!res.streamed) addMsg(изMarkdown(res.answer), 'bot');
+  // Ответ бота тоже идёт в историю. Без этого на «давай» модель не понимала,
+  // на что согласились, и заново пересказывала каталог.
+  if (res.answer) chatHistory.push({ role: 'assistant', text: res.answer });
 
-  if (res.needsManager && !phoneOffered && !phoneGiven) {
+  // Номер просим, только когда разговор уже начался: на «привет» это выглядит
+  // как «сначала телефон, потом поговорим». И не дублируем, если бот сам уже
+  // спросил номер в своём ответе.
+  const самСпросилНомер = /номер|телефон/i.test(res.answer || '');
+  const разговорНачался = chatHistory.filter(р => р.role === 'user').length >= 2;
+
+  if (самСпросилНомер) {
+    phoneOffered = true;
+    sinceReminder = 0;
+  } else if (res.needsManager && разговорНачался && !phoneOffered && !phoneGiven) {
     // Предлагаем оставить номер один раз, развёрнуто
     phoneOffered = true;
     sinceReminder = 0;
     setTimeout(() => addMsg('Оставьте номер телефона — менеджер посчитает и перезвонит. Или спрашивайте дальше, я на связи.', 'bot'), 420);
-  } else if (phoneOffered && !phoneGiven) {
+  } else if (phoneOffered && !phoneGiven && !самСпросилНомер) {
     // Дальше только короткое ненавязчивое напоминание и не каждый раз
     sinceReminder++;
     if (sinceReminder >= 2) {
@@ -934,6 +978,7 @@ const РАЗДЕЛИТЕЛЬ = String.fromCharCode(10, 10);
 // отвечаем по заготовкам и честно передаём сложный вопрос менеджеру.
 async function askAI(question, typing) {
   const тело = JSON.stringify({ message: question, history: chatHistory.slice(-6) });
+
 
   if (typing && window.ReadableStream) {
     try {
